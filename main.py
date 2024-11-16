@@ -15,7 +15,6 @@ app = Flask(__name__)
 CONFIG_FILE = '/var/lib/jellyfin/new_releases_config.json'
 JELLYFIN_CONFIG_PATH = '/var/lib/jellyfin/root/default/'
 LOG_DIR = '/var/log/jellyfin_new_releases'
-NEW_RELEASES_BASE = '/newreleases'  # Default base path for new releases
 
 # Define time periods
 PERIODS = {
@@ -37,7 +36,6 @@ def home():
         'index.html',
         libraries=config.get('libraries', []),
         periods=PERIODS.keys(),
-        new_releases_base=NEW_RELEASES_BASE
     )
 
 
