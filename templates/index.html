@@ -293,35 +293,32 @@
 
                     if (data.results) {
                         // Process movies
-                        if (data.results.movies && resultsMoviesElement) {
+                        if (data.results.movies && data.results.movies.length > 0) {
                             data.results.movies.forEach(movie => {
                                 const li = document.createElement("li");
                                 li.textContent = movie;
                                 resultsMoviesElement.appendChild(li);
                             });
+                        } else {
+                            const li = document.createElement("li");
+                            li.textContent = "No movies linked.";
+                            resultsMoviesElement.appendChild(li);
                         }
 
                         // Process shows
-                        if (data.results.shows && resultsShowsElement) {
+                        if (data.results.shows && data.results.shows.length > 0) {
                             data.results.shows.forEach(show => {
                                 const li = document.createElement("li");
                                 li.textContent = show;
                                 resultsShowsElement.appendChild(li);
                             });
+                        } else {
+                            const li = document.createElement("li");
+                            li.textContent = "No shows linked.";
+                            resultsShowsElement.appendChild(li);
                         }
 
                         // Show the results box
-                        if (resultsElement) {
-                            resultsElement.style.display = "block";
-                        }
-                    } else {
-                        // Handle no results case
-                        if (resultsMoviesElement) {
-                            resultsMoviesElement.textContent = "No new movies linked.";
-                        }
-                        if (resultsShowsElement) {
-                            resultsShowsElement.textContent = "No new shows linked.";
-                        }
                         if (resultsElement) {
                             resultsElement.style.display = "block";
                         }
@@ -338,8 +335,6 @@
                     }
                 });
         }
-
-
         window.onload = function() {
             addLibrary();
         };
