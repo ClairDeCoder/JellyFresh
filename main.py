@@ -43,11 +43,11 @@ def home():
 
 @app.route('/new_releases', methods=['POST'])
 def new_releases():
-    print("Received POST")
     """Handle the form submission and process the libraries."""
     jellyfin_media_paths = get_jellyfin_media_paths(JELLYFIN_CONFIG_PATH)
     libraries = []
-    results = []  # To collect linked media results
+    linked_movies = []  # Collect movie titles
+    linked_shows = []   # Collect show titles
 
     library_count = int(request.form.get('library_count', 1))
 
@@ -87,16 +87,26 @@ def new_releases():
 
         clean_new_releases_folder(new_releases_folder)
         if media_type == 'movies':
-            linked_movies = process_movies(media_path, new_releases_folder, time_period)
-            results.extend(linked_movies)
+            linked = process_movies(media_path, new_releases_folder, time_period)
+            linked_movies.extend(linked)
         elif media_type == 'shows':
-            linked_shows = process_shows(media_path, new_releases_folder, time_period)
-            results.extend(linked_shows)
+            linked = process_shows(media_path, new_releases_folder, time_period)
+            linked_shows.extend(linked)
 
-    if not results:
-        return jsonify({"results": [], "message": "No new media linked."})
+    # Debugging logs for movies and shows
+    app.logger.info(f"Linked movies: {linked_movies}")
+    app.logger.info(f"Linked shows: {linked_shows}")
 
-    return jsonify({"results": results, "message": "Scan completed successfully."})
+    if not linked_movies and not linked_shows:
+        return jsonify({"results": {"movies": [], "shows": []}, "message": "No new media linked."})
+
+    return jsonify({
+        "results": {
+            "movies": linked_movies,
+            "shows": linked_shows
+        },
+        "message": "Scan completed successfully."
+    })
 
 
 
