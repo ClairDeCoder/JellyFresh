@@ -3,26 +3,6 @@ import os
 from datetime import datetime, timedelta
 import glob
 
-# def setup_logging(log_dir, log_file='jellyfin_new_releases.log', max_bytes=5 * 1024 * 1024, backup_count=5):
-#     """
-#     Sets up logging with rotation.
-    
-#     Args:
-#         log_dir (str): Directory for log files.
-#         log_file (str): Name of the main log file.
-#         max_bytes (int): Maximum size of a log file before rotation.
-#         backup_count (int): Number of backup logs to retain.
-#     """
-#     os.makedirs(log_dir, exist_ok=True)
-
-#     log_path = os.path.join(log_dir, log_file)
-#     handler = RotatingFileHandler(log_path, maxBytes=max_bytes, backupCount=backup_count)
-#     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-#     handler.setFormatter(formatter)
-
-#     logging.basicConfig(level=logging.INFO, handlers=[handler])
-#     logging.info("Logging setup complete.")
-
 def setup_logging(LOG_DIR):
     """Setup logging for each scan with a timestamped log file and limit to the most recent 6 logs."""
     

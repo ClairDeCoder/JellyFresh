@@ -12,7 +12,7 @@ def load_config(config_file):
         dict: Loaded configuration.
     """
     if not os.path.exists(config_file):
-        return {"libraries": []}  # Default configuration
+        return {"libraries": []}
 
     with open(config_file, 'r') as f:
         return json.load(f)

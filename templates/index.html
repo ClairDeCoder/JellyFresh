@@ -27,7 +27,7 @@
             display: block;
             margin-top: 10px;
         }
-        input, select {
+        input {
             font-family: "Plus Jakarta Sans", sans-serif;
             font-weight: 400;
             display: block;
@@ -37,6 +37,34 @@
             margin-top: 5px;
             border: 1px solid #ccc;
             border-radius: 12px;
+        }
+        select {
+            font-family: "Plus Jakarta Sans", sans-serif;
+            font-weight: 400;
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px;
+            padding-right: 25px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 12px;
+            background-color: #fff;
+            background-clip: padding-box;
+            appearance: none;
+            background-image: url('/static/arrow.svg');
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 14px; /* Adjust arrow size */
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .button-container button {
+            width: auto; /* Ensure buttons don't stretch */
         }
         .header {
             width: 100%;
@@ -131,15 +159,15 @@
             margin: 20px 0;
         }
         .spinner img {
-            width: 50px;
+            width: 75px;
         }
         .results {
             display: none;
             margin-top: 20px;
             padding: 10px;
-            background: #e0ffe0;
-            border: 1px solid #a0d8a0;
+            background: #ddd;
             border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(54, 3, 134, 0.418);
         }
         .results ul {
             list-style: none;
@@ -199,7 +227,6 @@
 
             libraryContainer.appendChild(libraryDiv);
             libraryCount++;
-
             document.getElementById("library_count").value = libraryCount - 1; // Update hidden input
         }
 
@@ -330,9 +357,11 @@
     <form onsubmit="submitForm(event)">
         <div id="libraries"></div>
         <input type="hidden" id="library_count" name="library_count" value="1">
-        <button type="button" onclick="addLibrary()">Add Library</button>
-        <br><br>
-        <button type="submit">Save and Scan Libraries</button>
+        <div class="button-container">
+            <button type="button" onclick="addLibrary()">Add Library</button>
+            <button type="submit">Save and Scan Libraries</button>
+        </div>
+        
         <div id="spinner" class="spinner">
             <!-- Spinning Hourglass -->
             <!-- <img src="https://i.gifer.com/XVo6.gif" alt="Loading..."> -->
@@ -344,9 +373,9 @@
         </div>
         <div id="results" class="results">
             <h3>Scan Results:</h3>
-            <h4>Movies:</h4>
+            <label>Movies:</label>
             <ul id="results-movies"></ul>
-            <h4>Shows:</h4>
+            <label>Shows:</label>
             <ul id="results-shows"></ul>
         </div>
     </form>
