@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;600;800&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>Jellyfin New Releases Configuration</title>
+    <style>
+        body {
+            font-family: "Plus Jakarta Sans", sans-serif;
+            font-weight: 400;
+            margin: 0;
+            padding: 20px;
+            background-color: #000B25;
+        }
+        form {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #b99fff;
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid #563ead;
+        }
+        label {
+            font-weight: 600;
+            display: block;
+            margin-top: 10px;
+        }
+        input, select {
+            font-family: "Plus Jakarta Sans", sans-serif;
+            font-weight: 400;
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 12px;
+        }
+        .header {
+            width: 100%;
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .wrapper {
+            width: 100%;
+            position: relative;
+            margin: 30px 0;
+        }
+        .logo {
+            display: flex;
+            position: absolute;
+            top: 50%;
+            left: 37.5%;
+            transform: translateY(-50%);
+        }
+        .logo img {
+            width: 80px;
+        }
+        .header-text {
+            font-family: "Plus Jakarta Sans", sans-serif;
+            font-weight: 800;
+            font-size: 48px;
+            text-align: center;
+            position: relative;
+            width: 100%;
+            color: white;
+        }
+        .library {
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            background-color: #fafafa;
+            position: relative;
+            box-shadow: 0 4px 8px rgba(54, 3, 134, 0.418);
+        }
+        .library-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .library-header h3 {
+            font-family: "Plus Jakarta Sans", sans-serif;
+            font-weight: 700;
+            margin: 0;
+            font-size: 1.2em;
+        }
+        .remove-library {
+            background-color: #00A4DC;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1em;
+            font-weight: bold;
+            line-height: 1;
+            margin: 0;
+            padding: 0;
+            box-shadow: none;
+        }
+        .remove-library:hover {
+            background-color: #fd2a4d;
+        }
+        button {
+            font-family: "Plus Jakarta Sans", sans-serif;
+            font-weight: 600;
+            width: auto;
+            background-color: #00A4DC;
+            color: white;
+            cursor: pointer;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            margin-top: 10px;
+            box-shadow: 0 2px 8px rgba(54, 3, 134, 0.418);
+        }
+        button:hover {
+            background-color: #563ead;
+        }
+        .spinner {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .spinner img {
+            width: 50px;
+        }
+        .results {
+            display: none;
+            margin-top: 20px;
+            padding: 10px;
+            background: #e0ffe0;
+            border: 1px solid #a0d8a0;
+            border-radius: 12px;
+        }
+        .results ul {
+            list-style: none;
+            padding: 0;
+        }
+        .results ul li {
+            font-family: "Plus Jakarta Sans", sans-serif;
+            font-weight: 400;
+            margin: 5px 0;
+        }
+        .error {
+            font-family: "Plus Jakarta Sans", sans-serif;
+            font-weight: 600;
+            color: red;
+            text-align: center;
+            margin-top: 10px;
+            display: block;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+    <script>
+        let libraryCount = 1;
+
+        function addLibrary() {
+            const libraryContainer = document.getElementById("libraries");
+            const libraryDiv = document.createElement("div");
+            libraryDiv.className = "library";
+            libraryDiv.id = `library-${libraryCount}`;
+
+            libraryDiv.innerHTML = `
+                <div class="library-header">
+                    <h3>Library ${libraryCount}</h3>
+                    <button type="button" class="remove-library" onclick="removeLibrary(${libraryCount})">X</button>
+                </div>
+                <label for="media_type-${libraryCount}">Select Media Type:</label>
+                <select id="media_type-${libraryCount}" name="media_type-${libraryCount}" required>
+                    <option value="movies">Movies</option>
+                    <option value="shows">TV Shows</option>
+                    <option value="both">Both</option>
+                </select>
+                
+                <label for="period-${libraryCount}">Select Time Period:</label>
+                <select id="period-${libraryCount}" name="period-${libraryCount}" required>
+                    <option value="1_week">Last Week</option>
+                    <option value="2_weeks">Last 2 Weeks</option>
+                    <option value="1_month">Last Month</option>
+                    <option value="2_months">Last 2 Months</option>
+                    <option value="6_months">Last 6 Months</option>
+                    <option value="1_year">Last Year</option>
+                </select>
+
+                <label for="new_releases_folder-${libraryCount}">New Releases Folder:</label>
+                <input type="text" id="new_releases_folder-${libraryCount}" name="new_releases_folder-${libraryCount}" placeholder="/path/to/new/releases" required>
+            `;
+
+            libraryContainer.appendChild(libraryDiv);
+            libraryCount++;
+
+            document.getElementById("library_count").value = libraryCount - 1; // Update hidden input
+        }
+
+        function removeLibrary(index) {
+            const libraryDiv = document.getElementById(`library-${index}`);
+            if (libraryDiv) {
+                libraryDiv.remove();
+                libraryCount--;
+                document.getElementById("library_count").value = libraryCount; // Update hidden input
+            }
+        }
+
+
+        function submitForm(event) {
+            event.preventDefault();
+
+            // Clear previous errors and results
+            const errorMessageElement = document.getElementById("error-message");
+            const resultsElement = document.getElementById("results");
+            const resultsMoviesElement = document.getElementById("results-movies");
+            const resultsShowsElement = document.getElementById("results-shows");
+            const spinnerElement = document.getElementById("spinner");
+
+            if (errorMessageElement) {
+                errorMessageElement.textContent = "";
+                errorMessageElement.style.display = "none";
+            }
+
+            if (resultsElement) {
+                resultsElement.style.display = "none";
+            }
+
+            if (resultsMoviesElement) {
+                resultsMoviesElement.innerHTML = "";
+            }
+
+            if (resultsShowsElement) {
+                resultsShowsElement.innerHTML = "";
+            }
+
+            if (spinnerElement) {
+                spinnerElement.style.display = "block"; // Show the spinner
+            }
+
+            // Gather form data
+            const formData = new FormData(event.target);
+
+            // Send POST request to /new_releases
+            fetch("/new_releases", {
+                method: "POST",
+                body: formData,
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (spinnerElement) {
+                        spinnerElement.style.display = "none"; // Hide spinner
+                    }
+
+                    if (data.error && errorMessageElement) {
+                        errorMessageElement.textContent = data.error;
+                        errorMessageElement.style.display = "block";
+                        return; // Stop further processing
+                    }
+
+                    if (data.results) {
+                        // Process movies
+                        if (data.results.movies && resultsMoviesElement) {
+                            data.results.movies.forEach(movie => {
+                                const li = document.createElement("li");
+                                li.textContent = movie;
+                                resultsMoviesElement.appendChild(li);
+                            });
+                        }
+
+                        // Process shows
+                        if (data.results.shows && resultsShowsElement) {
+                            data.results.shows.forEach(show => {
+                                const li = document.createElement("li");
+                                li.textContent = show;
+                                resultsShowsElement.appendChild(li);
+                            });
+                        }
+
+                        // Show the results box
+                        if (resultsElement) {
+                            resultsElement.style.display = "block";
+                        }
+                    } else {
+                        // Handle no results case
+                        if (resultsMoviesElement) {
+                            resultsMoviesElement.textContent = "No new movies linked.";
+                        }
+                        if (resultsShowsElement) {
+                            resultsShowsElement.textContent = "No new shows linked.";
+                        }
+                        if (resultsElement) {
+                            resultsElement.style.display = "block";
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    if (spinnerElement) {
+                        spinnerElement.style.display = "none";
+                    }
+                    if (errorMessageElement) {
+                        errorMessageElement.textContent = "An unexpected error occurred.";
+                        errorMessageElement.style.display = "block";
+                    }
+                });
+        }
+
+
+        window.onload = function() {
+            addLibrary();
+        };
+    </script>
+</head>
+<body>
+    <header class="header">
+        <div class="wrapper">
+          <div class="logo">
+            <img src="/static/jellyfresh.png" alt="a logo">
+          </div>
+          <div class="header-text">JellyFresh</div>
+        </div>
+      </header>
+    <form onsubmit="submitForm(event)">
+        <div id="libraries"></div>
+        <input type="hidden" id="library_count" name="library_count" value="1">
+        <button type="button" onclick="addLibrary()">Add Library</button>
+        <br><br>
+        <button type="submit">Save and Scan Libraries</button>
+        <div id="spinner" class="spinner">
+            <!-- Spinning Hourglass -->
+            <!-- <img src="https://i.gifer.com/XVo6.gif" alt="Loading..."> -->
+             <!-- Panda Bear Sleeping -->
+            <img src="https://i.gifer.com/5UKD.gif" alt="Loading...">
+            <!-- Duck walking -->
+            <!-- <img src="https://i.gifer.com/XOsX.gif" alt="Loading..."> -->
+            <p>Scanning for new releases...</p>
+        </div>
+        <div id="results" class="results">
+            <h3>Scan Results:</h3>
+            <h4>Movies:</h4>
+            <ul id="results-movies"></ul>
+            <h4>Shows:</h4>
+            <ul id="results-shows"></ul>
+        </div>
+    </form>
+</body>
+</html>
