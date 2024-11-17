@@ -22,6 +22,63 @@
             border-radius: 12px;
             border: 2px solid #563ead;
         }
+        /* Toggle switch styling */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 34px;
+        }
+        .toggle-label {
+            margin-left: 10px;
+            font-size: 16px;
+            line-height: 1;
+            font-weight: 600;
+            display: block;
+            margin-top: 10px;
+        }
+
+        /* Additional margin for automatic options */
+        #automatic-options {
+            margin-top: 15px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #4caf50;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
         label {
             font-weight: 600;
             display: block;
@@ -63,8 +120,14 @@
             align-items: center;
             margin-top: 20px;
         }
+        .button-container-toggle {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center; /* Ensures both the toggle and label are vertically centered */
+            margin-top: 20px; /* Adds spacing above the container */
+        }
         .button-container button {
-            width: auto; /* Ensure buttons don't stretch */
+            width: auto;
         }
         .header {
             width: 100%;
@@ -191,54 +254,205 @@
         }
     </style>
     <script>
-        let libraryCount = 1;
+let libraryCount = 0;
 
-        function addLibrary() {
-            const libraryContainer = document.getElementById("libraries");
-            const libraryDiv = document.createElement("div");
-            libraryDiv.className = "library";
-            libraryDiv.id = `library-${libraryCount}`;
+function addLibrary(libraryData = null) {
+    const libraryContainer = document.getElementById("libraries");
+    const libraryDiv = document.createElement("div");
+    libraryDiv.className = "library";
+    libraryDiv.id = `library-${libraryCount + 1}`; // Start library numbering from 1
 
-            libraryDiv.innerHTML = `
-                <div class="library-header">
-                    <h3>Library ${libraryCount}</h3>
-                    <button type="button" class="remove-library" onclick="removeLibrary(${libraryCount})">X</button>
-                </div>
-                <label for="media_type-${libraryCount}">Select Media Type:</label>
-                <select id="media_type-${libraryCount}" name="media_type-${libraryCount}" required>
-                    <option value="movies">Movies</option>
-                    <option value="shows">TV Shows</option>
-                    <option value="both">Both</option>
-                </select>
-                
-                <label for="period-${libraryCount}">Select Time Period:</label>
-                <select id="period-${libraryCount}" name="period-${libraryCount}" required>
-                    <option value="1_week">Last Week</option>
-                    <option value="2_weeks">Last 2 Weeks</option>
-                    <option value="1_month">Last Month</option>
-                    <option value="2_months">Last 2 Months</option>
-                    <option value="6_months">Last 6 Months</option>
-                    <option value="1_year">Last Year</option>
-                </select>
+    const mediaType = libraryData?.media_type || "movies";
+    const timePeriod = libraryData?.time_period || "1_week";
+    const newReleasesFolder = libraryData?.new_releases_folder || "";
 
-                <label for="new_releases_folder-${libraryCount}">New Releases Folder:</label>
-                <input type="text" id="new_releases_folder-${libraryCount}" name="new_releases_folder-${libraryCount}" placeholder="/path/to/new/releases" required>
-            `;
+    libraryDiv.innerHTML = `
+        <div class="library-header">
+            <h3>Library ${libraryCount + 1}</h3>
+            <button type="button" class="remove-library" onclick="removeLibrary(${libraryCount + 1})">X</button>
+        </div>
+        <label for="media_type-${libraryCount + 1}">Select Media Type:</label>
+        <select id="media_type-${libraryCount + 1}" name="media_type-${libraryCount + 1}" required>
+            <option value="movies" ${mediaType === "movies" ? "selected" : ""}>Movies</option>
+            <option value="shows" ${mediaType === "shows" ? "selected" : ""}>TV Shows</option>
+            <option value="both" ${mediaType === "both" ? "selected" : ""}>Both</option>
+        </select>
+        
+        <label for="period-${libraryCount + 1}">Select Time Period:</label>
+        <select id="period-${libraryCount + 1}" name="period-${libraryCount + 1}" required>
+            <option value="1_week" ${timePeriod === "1_week" ? "selected" : ""}>Last Week</option>
+            <option value="2_weeks" ${timePeriod === "2_weeks" ? "selected" : ""}>Last 2 Weeks</option>
+            <option value="1_month" ${timePeriod === "1_month" ? "selected" : ""}>Last Month</option>
+            <option value="2_months" ${timePeriod === "2_months" ? "selected" : ""}>Last 2 Months</option>
+            <option value="6_months" ${timePeriod === "6_months" ? "selected" : ""}>Last 6 Months</option>
+            <option value="1_year" ${timePeriod === "1_year" ? "selected" : ""}>Last Year</option>
+        </select>
 
-            libraryContainer.appendChild(libraryDiv);
-            libraryCount++;
-            document.getElementById("library_count").value = libraryCount - 1; // Update hidden input
-        }
+        <label for="new_releases_folder-${libraryCount + 1}">New Releases Folder:</label>
+        <input type="text" id="new_releases_folder-${libraryCount + 1}" name="new_releases_folder-${libraryCount + 1}" placeholder="/path/to/new/releases" value="${newReleasesFolder}" required>
+    `;
 
-        function removeLibrary(index) {
-            const libraryDiv = document.getElementById(`library-${index}`);
-            if (libraryDiv) {
-                libraryDiv.remove();
-                libraryCount--;
-                document.getElementById("library_count").value = libraryCount; // Update hidden input
+    libraryContainer.appendChild(libraryDiv);
+    libraryCount++;
+    document.getElementById("library_count").value = libraryCount; // Update hidden input
+}
+
+function removeLibrary(index) {
+    const libraryDiv = document.getElementById(`library-${index}`);
+    if (libraryDiv) {
+        libraryDiv.remove();
+        libraryCount--;
+        document.getElementById("library_count").value = libraryCount; // Update hidden input
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const libraryContainer = document.getElementById("libraries");
+
+    // Fetch libraries from the backend
+    fetch('/libraries')
+        .then(response => response.json())
+        .then(libraries => {
+            console.log("Fetched Libraries:", libraries); // Debugging output
+
+            if (libraries && libraries.length > 0) {
+                libraryCount = 0; // Reset the count before adding libraries
+                libraryContainer.innerHTML = ""; // Clear container before adding
+                // Populate the form with existing libraries
+                libraries.forEach(library => {
+                    addLibrary({
+                        media_type: library.media_type,
+                        time_period: getPeriodKey(library.time_period),
+                        new_releases_folder: library.new_releases_folder
+                    });
+                });
+            } else {
+                // If no libraries exist, add a single blank form
+                libraryContainer.innerHTML = ""; // Ensure no previous content
+                addLibrary();
             }
-        }
+        })
+        .catch(err => {
+            console.error("Error loading libraries:", err);
+            // Add a single blank form as a fallback
+            libraryContainer.innerHTML = ""; // Ensure no previous content
+            addLibrary();
+        });
+});
 
+// Helper function to map time_period to dropdown keys
+function getPeriodKey(timePeriod) {
+    const periods = {
+        604800: "1_week",
+        1209600: "2_weeks",
+        2592000: "1_month",
+        5184000: "2_months",
+        15724800: "6_months",
+        31536000: "1_year"
+    };
+    return periods[timePeriod] || "1_week"; // Default to "1_week" if no match
+}
+
+
+                
+        // Get configuration of scheduler
+        document.addEventListener('DOMContentLoaded', () => {
+            const modeToggle = document.getElementById("mode-toggle");
+            const modeLabel = document.getElementById("mode-label");
+            const automaticOptions = document.getElementById("automatic-options");
+            const form = document.querySelector("#settings-section form");
+            const nextScanInfo = document.getElementById("next-scan-info");
+
+            // Fetch existing scheduler settings from the backend
+            fetch('/scheduler')
+                .then(response => response.json())
+                .then(scheduler => {
+                    console.log("Fetched Scheduler Settings:", scheduler); // Debugging output
+
+                    // Apply settings from the configuration
+                    const mode = scheduler.mode || "manual"; // Default to "manual"
+                    modeToggle.checked = mode === "automatic";
+                    modeLabel.textContent = modeToggle.checked ? "Automatic" : "Manual";
+                    automaticOptions.style.display = modeToggle.checked ? "block" : "none";
+
+                    // Set frequency and time if available
+                    if (scheduler.frequency) {
+                        document.getElementById("frequency").value = scheduler.frequency;
+                    }
+                    if (scheduler.time) {
+                        document.getElementById("time").value = scheduler.time;
+                    }
+                })
+                .catch(err => {
+                    console.error("Error loading scheduler settings:", err);
+                });
+
+            // Update label and options visibility on toggle change
+            modeToggle.addEventListener("change", () => {
+                const isAutomatic = modeToggle.checked;
+                modeLabel.textContent = isAutomatic ? "Automatic" : "Manual";
+                automaticOptions.style.display = isAutomatic ? "block" : "none";
+            });
+
+            // Handle form submission to save scheduler settings
+            form.addEventListener("submit", event => {
+                event.preventDefault();
+
+                const formData = new FormData(form);
+                formData.set("mode", modeToggle.checked ? "automatic" : "manual");
+
+                fetch('/scheduler', {
+                    method: "POST",
+                    body: formData,
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.next_scan) {
+                            const formattedTime = new Date(data.next_scan).toLocaleString();
+                            nextScanInfo.textContent = `Next scan scheduled for: ${formattedTime}`;
+                        } else if (data.error) {
+                            nextScanInfo.textContent = `Error: ${data.error}`;
+                        } else {
+                            nextScanInfo.textContent = "Settings updated successfully.";
+                        }
+                    })
+                    .catch(err => {
+                        console.error("Error saving scheduler settings:", err);
+                        nextScanInfo.textContent = "An unexpected error occurred.";
+                    });
+            });
+        });
+
+
+                    // // Handle form submission
+                    // form.addEventListener('submit', event => {
+                    //     event.preventDefault();
+
+                    //     const formData = new FormData(form);
+                    //     formData.set('mode', modeToggle.checked ? 'automatic' : 'manual');
+
+                    //     fetch('/scheduler', {
+                    //         method: 'POST',
+                    //         body: formData
+                    //     })
+                    //         .then(response => response.json())
+                    //         .then(data => {
+                    //             if (data.next_scan) {
+                    //                 const formattedTime = formatTimestamp(data.next_scan);
+                    //                 nextScanInfo.textContent = `Next scan scheduled for: ${formattedTime}`;
+                    //             } else if (data.error) {
+                    //                 nextScanInfo.textContent = `Error: ${data.error}`;
+                    //             } else {
+                    //                 nextScanInfo.textContent = "Settings updated successfully.";
+                    //             }
+                    //         })
+                    //         .catch(err => {
+                    //             nextScanInfo.textContent = `Error: ${err.message}`;
+                    //         });
+                    // });
+
+
+        
 
         function submitForm(event) {
             event.preventDefault();
@@ -348,15 +562,44 @@
           </div>
           <div class="header-text">JellyFresh</div>
         </div>
-      </header>
+    </header>
+    <div id="settings-section">
+        <form>
+            <h3>Scheduler Settings</h3>
+            <div class="button-container-toggle">
+                <label class="switch">
+                    <input type="checkbox" id="mode-toggle" name="mode">
+                    <span class="slider"></span>  
+                </label>
+                <toggle-label>
+                    <span id="mode-label" class="toggle-label">Manual</span>
+                </toggle-label>
+            </div>
+            <div id="automatic-options" style="display: none; margin-top: 10px;">
+                <label for="frequency">Frequency:</label>
+                <select id="frequency" name="frequency">
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="monthly">Monthly</option>
+                </select>
+    
+                <label for="time">Time of Day:</label>
+                <input type="time" id="time" name="time" value="02:00">
+            </div>
+            <p></p>
+            <button type="submit">Save Settings</button>
+            <p id="next-scan-info"></p>
+        </form>
+    </div>
+    <p></p>
     <form onsubmit="submitForm(event)">
         <div id="libraries"></div>
+        <div id="library-form-container"></div>
         <input type="hidden" id="library_count" name="library_count" value="1">
-        <div class="button-container">
-            <button type="button" onclick="addLibrary()">Add Library</button>
-            <button type="submit">Save and Scan Libraries</button>
-        </div>
-        
+            <div class="button-container">
+                <button type="button" onclick="addLibrary()">Add Library</button>
+                <button type="submit">Save and Scan Libraries</button>
+            </div>
         <div id="spinner" class="spinner">
             <!-- Spinning Hourglass -->
             <!-- <img src="https://i.gifer.com/XVo6.gif" alt="Loading..."> -->
@@ -364,7 +607,7 @@
             <img src="https://i.gifer.com/5UKD.gif" alt="Loading...">
             <!-- Duck walking -->
             <!-- <img src="https://i.gifer.com/XOsX.gif" alt="Loading..."> -->
-            <p>Scanning for new releases...</p>
+            <p>Scanning for new releases... Don't refresh!</p>
         </div>
         <div id="results" class="results">
             <h3>Scan Results:</h3>
