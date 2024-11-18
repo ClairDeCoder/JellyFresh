@@ -27,6 +27,7 @@ PERIODS = {
 }
 
 
+
 @app.route('/')
 def home():
     """Render the home page with current config values."""
@@ -39,6 +40,8 @@ def home():
         periods=PERIODS.keys(),
     )
 
+
+
 @app.route('/scheduler', methods=['GET', 'POST'])
 def scheduler():
     """Handle both fetching and updating scheduler settings."""
@@ -50,6 +53,7 @@ def scheduler():
             "mode": "manual",
             "frequency": "weekly",
             "time": "02:00",
+            "next_scan": None
         })
         return jsonify(scheduler)
 
@@ -59,15 +63,8 @@ def scheduler():
         frequency = request.form.get("frequency", "weekly")
         time = request.form.get("time", "02:00")
 
-        # Update the configuration
-        config["automation"] = {
-            "mode": mode,
-            "frequency": frequency,
-            "time": time,
-        }
-        save_config(CONFIG_FILE, config)
-
-        # Calculate and return the next scheduled scan time (if in automatic mode)
+        # Calculate the next scan time if in automatic mode
+        next_scan = None
         if mode == "automatic":
             now = datetime.now()
             if frequency == "daily":
@@ -79,10 +76,22 @@ def scheduler():
             else:
                 return jsonify({"error": "Invalid frequency"}), 400
 
+            # Set the time for the next scan
             next_scan = next_scan.replace(hour=int(time.split(":")[0]), minute=int(time.split(":")[1]), second=0)
-            return jsonify({"message": "Settings saved successfully", "next_scan": next_scan.isoformat()})
 
-        return jsonify({"message": "Settings saved successfully", "next_scan": None})
+        # Update the configuration
+        config["automation"] = {
+            "mode": mode,
+            "frequency": frequency,
+            "time": time,
+            "next_scan": next_scan.isoformat() if next_scan else None
+        }
+        save_config(CONFIG_FILE, config)
+
+        return jsonify({
+            "message": "Settings saved successfully",
+            "next_scan": next_scan.isoformat() if next_scan else None
+        })
 
 
 
@@ -132,8 +141,6 @@ def new_releases():
                     'new_releases_folder': new_releases_folder
                 })
 
-    
-    
     # Update configuration with new libraries
     config['libraries'] = new_libraries
     save_config(CONFIG_FILE, config)
@@ -170,11 +177,12 @@ def new_releases():
 
 
 
-
 @app.errorhandler(Exception)
 def handle_exception(e):
     logging.error(f"Unhandled exception: {e}")
     return jsonify({"error": "An unexpected error occurred."}), 500
+
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

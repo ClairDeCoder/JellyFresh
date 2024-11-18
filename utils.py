@@ -58,7 +58,7 @@ def parse_nfo(nfo_path, tag):
         # Find the tag and return its text content
         element = root.find(tag)
         if element is not None:
-            return element.text.strip()  # Return the text content of the tag
+            return element.text.strip()
         else:
             logging.warning(f"Tag <{tag}> not found in {nfo_path}.")
             return None

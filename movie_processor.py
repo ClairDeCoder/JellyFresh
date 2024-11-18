@@ -16,7 +16,7 @@ def process_movies(media_path, new_releases_folder, time_period):
         list: A list of clean movie titles that were linked.
     """
     cutoff_date = datetime.now() - time_period
-    linked_movies = []  # Store clean titles of linked movies
+    linked_movies = [] # Clean titles of linked movies
 
     logging.info(f"Processing movies from: {media_path}")
     logging.info(f"Cutoff date for new releases: {cutoff_date}")
@@ -31,7 +31,7 @@ def process_movies(media_path, new_releases_folder, time_period):
                 # Check for an .nfo file with the same name
                 nfo_file = os.path.splitext(video_file)[0] + '.nfo'
 
-                # If no matching NFO file, check for `movie.nfo` in the current folder
+                # If no matching NFO file, check for movie.nfo in the current folder
                 if not os.path.exists(nfo_file):
                     nfo_file = os.path.join(root, 'movie.nfo')
 
@@ -63,5 +63,5 @@ def process_movies(media_path, new_releases_folder, time_period):
                     logging.warning(f"No .nfo file found for {file}. Skipping.")
 
     logging.info(f"Total movies linked: {len(linked_movies)}")
-    return linked_movies
+    return linked_movies # Return linked movies for web results
 

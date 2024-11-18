@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <title>JellyFresh</title>
     <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,20 +23,17 @@
             border-radius: 12px;
             border: 2px solid #563ead;
         }
-        /* Toggle switch styling */
         .switch {
             position: relative;
             display: inline-block;
             width: 60px;
             height: 34px;
         }
-
         .switch input {
             opacity: 0;
             width: 0;
             height: 0;
         }
-
         .slider {
             position: absolute;
             cursor: pointer;
@@ -55,8 +53,6 @@
             display: block;
             margin-top: 10px;
         }
-
-        /* Additional margin for automatic options */
         #automatic-options {
             margin-top: 15px;
         }
@@ -71,7 +67,6 @@
             transition: 0.4s;
             border-radius: 50%;
         }
-
         input:checked + .slider {
             background-color: #4caf50;
         }
@@ -95,6 +90,7 @@
             border: 1px solid #ccc;
             border-radius: 12px;
         }
+        /* Arrow for drop-down */
         select {
             font-family: "Plus Jakarta Sans", sans-serif;
             font-weight: 400;
@@ -114,30 +110,76 @@
             background-position: right 10px center;
             background-size: 14px; /* Adjust arrow size */
         }
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            width: 100%;
+            padding: 10px 20px;
+            margin-bottom: 20px;
+            position: relative;
+            box-sizing: border-box;
+        }
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: nowrap;
+            gap: 20px;
+            width: 100%;
+        }
+        .logo img {
+            max-width: 80px;
+            height: auto;
+            flex-shrink: 0;
+        }
+        .header-text {
+            font-family: "Plus Jakarta Sans", sans-serif;
+            font-weight: 800;
+            font-size: 48px;
+            color: white;
+            text-align: center;
+            flex: 1;
+            min-width: 200px;
+            word-wrap: break-word;
+        }
+        /* Handle smaller screens */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+            .logo img {
+                max-width: 60px;
+                margin-bottom: 10px;
+            }
+            .header-text {
+                font-size: 36px;
+                text-align: center;
+                max-width: 100%;
+            }
+        }
         .button-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+        }
+        .button-container-toggle {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+        }
+        .button-container-label {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-top: 20px;
         }
-        .button-container-toggle {
-            display: flex;
-            justify-content: flex-start;
-            align-items: center; /* Ensures both the toggle and label are vertically centered */
-            margin-top: 20px; /* Adds spacing above the container */
-        }
         .button-container button {
             width: auto;
-        }
-        .header {
-            width: 100%;
-            position: relative;
-            margin-bottom: 20px;
-        }
-        .wrapper {
-            width: 100%;
-            position: relative;
-            margin: 30px 0;
         }
         .logo {
             display: flex;
@@ -145,18 +187,6 @@
             top: 50%;
             left: 37.5%;
             transform: translateY(-50%);
-        }
-        .logo img {
-            width: 80px;
-        }
-        .header-text {
-            font-family: "Plus Jakarta Sans", sans-serif;
-            font-weight: 800;
-            font-size: 48px;
-            text-align: center;
-            position: relative;
-            width: 100%;
-            color: white;
         }
         .library {
             padding: 10px;
@@ -210,7 +240,6 @@
             padding: 10px 20px;
             border-radius: 8px;
             border: none;
-            margin-top: 10px;
             box-shadow: 0 2px 8px rgba(54, 3, 134, 0.418);
         }
         button:hover {
@@ -254,108 +283,110 @@
         }
     </style>
     <script>
-let libraryCount = 0;
+        /////////////////////////////////////////////////////////////////////
+        // Get library configs if exist, load default forms, remove libraries
+        /////////////////////////////////////////////////////////////////////
+        let libraryCount = 0;
 
-function addLibrary(libraryData = null) {
-    const libraryContainer = document.getElementById("libraries");
-    const libraryDiv = document.createElement("div");
-    libraryDiv.className = "library";
-    libraryDiv.id = `library-${libraryCount + 1}`; // Start library numbering from 1
+        function addLibrary(libraryData = null) {
+            const libraryContainer = document.getElementById("libraries");
+            const libraryDiv = document.createElement("div");
+            libraryDiv.className = "library";
+            libraryDiv.id = `library-${libraryCount + 1}`;
 
-    const mediaType = libraryData?.media_type || "movies";
-    const timePeriod = libraryData?.time_period || "1_week";
-    const newReleasesFolder = libraryData?.new_releases_folder || "";
+            const mediaType = libraryData?.media_type || "movies";
+            const timePeriod = libraryData?.time_period || "1_week";
+            const newReleasesFolder = libraryData?.new_releases_folder || "";
 
-    libraryDiv.innerHTML = `
-        <div class="library-header">
-            <h3>Library ${libraryCount + 1}</h3>
-            <button type="button" class="remove-library" onclick="removeLibrary(${libraryCount + 1})">X</button>
-        </div>
-        <label for="media_type-${libraryCount + 1}">Select Media Type:</label>
-        <select id="media_type-${libraryCount + 1}" name="media_type-${libraryCount + 1}" required>
-            <option value="movies" ${mediaType === "movies" ? "selected" : ""}>Movies</option>
-            <option value="shows" ${mediaType === "shows" ? "selected" : ""}>TV Shows</option>
-            <option value="both" ${mediaType === "both" ? "selected" : ""}>Both</option>
-        </select>
-        
-        <label for="period-${libraryCount + 1}">Select Time Period:</label>
-        <select id="period-${libraryCount + 1}" name="period-${libraryCount + 1}" required>
-            <option value="1_week" ${timePeriod === "1_week" ? "selected" : ""}>Last Week</option>
-            <option value="2_weeks" ${timePeriod === "2_weeks" ? "selected" : ""}>Last 2 Weeks</option>
-            <option value="1_month" ${timePeriod === "1_month" ? "selected" : ""}>Last Month</option>
-            <option value="2_months" ${timePeriod === "2_months" ? "selected" : ""}>Last 2 Months</option>
-            <option value="6_months" ${timePeriod === "6_months" ? "selected" : ""}>Last 6 Months</option>
-            <option value="1_year" ${timePeriod === "1_year" ? "selected" : ""}>Last Year</option>
-        </select>
-
-        <label for="new_releases_folder-${libraryCount + 1}">New Releases Folder:</label>
-        <input type="text" id="new_releases_folder-${libraryCount + 1}" name="new_releases_folder-${libraryCount + 1}" placeholder="/path/to/new/releases" value="${newReleasesFolder}" required>
-    `;
-
-    libraryContainer.appendChild(libraryDiv);
-    libraryCount++;
-    document.getElementById("library_count").value = libraryCount; // Update hidden input
-}
-
-function removeLibrary(index) {
-    const libraryDiv = document.getElementById(`library-${index}`);
-    if (libraryDiv) {
-        libraryDiv.remove();
-        libraryCount--;
-        document.getElementById("library_count").value = libraryCount; // Update hidden input
-    }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    const libraryContainer = document.getElementById("libraries");
-
-    // Fetch libraries from the backend
-    fetch('/libraries')
-        .then(response => response.json())
-        .then(libraries => {
-            console.log("Fetched Libraries:", libraries); // Debugging output
-
-            if (libraries && libraries.length > 0) {
-                libraryCount = 0; // Reset the count before adding libraries
-                libraryContainer.innerHTML = ""; // Clear container before adding
-                // Populate the form with existing libraries
-                libraries.forEach(library => {
-                    addLibrary({
-                        media_type: library.media_type,
-                        time_period: getPeriodKey(library.time_period),
-                        new_releases_folder: library.new_releases_folder
-                    });
-                });
-            } else {
-                // If no libraries exist, add a single blank form
-                libraryContainer.innerHTML = ""; // Ensure no previous content
-                addLibrary();
-            }
-        })
-        .catch(err => {
-            console.error("Error loading libraries:", err);
-            // Add a single blank form as a fallback
-            libraryContainer.innerHTML = ""; // Ensure no previous content
-            addLibrary();
-        });
-});
-
-// Helper function to map time_period to dropdown keys
-function getPeriodKey(timePeriod) {
-    const periods = {
-        604800: "1_week",
-        1209600: "2_weeks",
-        2592000: "1_month",
-        5184000: "2_months",
-        15724800: "6_months",
-        31536000: "1_year"
-    };
-    return periods[timePeriod] || "1_week"; // Default to "1_week" if no match
-}
-
-
+            libraryDiv.innerHTML = `
+                <div class="library-header">
+                    <h3>Library ${libraryCount + 1}</h3>
+                    <button type="button" class="remove-library" onclick="removeLibrary(${libraryCount + 1})">X</button>
+                </div>
+                <label for="media_type-${libraryCount + 1}">Select Media Type:</label>
+                <select id="media_type-${libraryCount + 1}" name="media_type-${libraryCount + 1}" required>
+                    <option value="movies" ${mediaType === "movies" ? "selected" : ""}>Movies</option>
+                    <option value="shows" ${mediaType === "shows" ? "selected" : ""}>TV Shows</option>
+                    <option value="both" ${mediaType === "both" ? "selected" : ""}>Both</option>
+                </select>
                 
-        // Get configuration of scheduler
+                <label for="period-${libraryCount + 1}">Select Time Period:</label>
+                <select id="period-${libraryCount + 1}" name="period-${libraryCount + 1}" required>
+                    <option value="1_week" ${timePeriod === "1_week" ? "selected" : ""}>Last Week</option>
+                    <option value="2_weeks" ${timePeriod === "2_weeks" ? "selected" : ""}>Last 2 Weeks</option>
+                    <option value="1_month" ${timePeriod === "1_month" ? "selected" : ""}>Last Month</option>
+                    <option value="2_months" ${timePeriod === "2_months" ? "selected" : ""}>Last 2 Months</option>
+                    <option value="6_months" ${timePeriod === "6_months" ? "selected" : ""}>Last 6 Months</option>
+                    <option value="1_year" ${timePeriod === "1_year" ? "selected" : ""}>Last Year</option>
+                </select>
+
+                <label for="new_releases_folder-${libraryCount + 1}">New Releases Folder:</label>
+                <input type="text" id="new_releases_folder-${libraryCount + 1}" name="new_releases_folder-${libraryCount + 1}" placeholder="/path/to/new/releases" value="${newReleasesFolder}" required>
+            `;
+
+            libraryContainer.appendChild(libraryDiv);
+            libraryCount++;
+            document.getElementById("library_count").value = libraryCount;
+        }
+
+        function removeLibrary(index) {
+            const libraryDiv = document.getElementById(`library-${index}`);
+            if (libraryDiv) {
+                libraryDiv.remove();
+                libraryCount--;
+                document.getElementById("library_count").value = libraryCount;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const libraryContainer = document.getElementById("libraries");
+
+            // Get libraries from the backend
+            fetch('/libraries')
+                .then(response => response.json())
+                .then(libraries => {
+                    console.log("Fetched Libraries:", libraries); // Debugging output
+
+                    if (libraries && libraries.length > 0) {
+                        libraryCount = 0;
+                        libraryContainer.innerHTML = "";
+                        // Populate the form with existing libraries
+                        libraries.forEach(library => {
+                            addLibrary({
+                                media_type: library.media_type,
+                                time_period: getPeriodKey(library.time_period),
+                                new_releases_folder: library.new_releases_folder
+                            });
+                        });
+                    } else {
+                        // If no libraries exist, add a single blank form
+                        libraryContainer.innerHTML = "";
+                        addLibrary();
+                    }
+                })
+                .catch(err => {
+                    console.error("Error loading libraries:", err);
+                    // Add a single blank form as a fallback
+                    libraryContainer.innerHTML = "";
+                    addLibrary();
+                });
+        });
+        // Helper function to map time_period to dropdown keys
+        function getPeriodKey(timePeriod) {
+            const periods = {
+                604800: "1_week",
+                1209600: "2_weeks",
+                2592000: "1_month",
+                5184000: "2_months",
+                15724800: "6_months",
+                31536000: "1_year"
+            };
+            return periods[timePeriod] || "1_week"; // Default to "1_week" if no match
+        }
+
+        /////////////////////////////////////////////////////////////////////
+        // Scheduler setup - get current schedule config && set new config
+        /////////////////////////////////////////////////////////////////////            
         document.addEventListener('DOMContentLoaded', () => {
             const modeToggle = document.getElementById("mode-toggle");
             const modeLabel = document.getElementById("mode-label");
@@ -363,7 +394,7 @@ function getPeriodKey(timePeriod) {
             const form = document.querySelector("#settings-section form");
             const nextScanInfo = document.getElementById("next-scan-info");
 
-            // Fetch existing scheduler settings from the backend
+            // Get existing scheduler settings from the backend
             fetch('/scheduler')
                 .then(response => response.json())
                 .then(scheduler => {
@@ -381,6 +412,12 @@ function getPeriodKey(timePeriod) {
                     }
                     if (scheduler.time) {
                         document.getElementById("time").value = scheduler.time;
+                    }
+
+                    // Display the next scan info if available
+                    if (scheduler.next_scan) {
+                        const formattedNextScan = new Date(scheduler.next_scan).toLocaleString();
+                        nextScanInfo.textContent = `Next scan: ${formattedNextScan}`;
                     }
                 })
                 .catch(err => {
@@ -415,45 +452,24 @@ function getPeriodKey(timePeriod) {
                         } else {
                             nextScanInfo.textContent = "Settings updated successfully.";
                         }
+                        // Automatically hide the success/error message after 5 seconds
+                        setTimeout(() => {
+                            nextScanInfo.textContent = "";
+                        }, 5000);
                     })
                     .catch(err => {
                         console.error("Error saving scheduler settings:", err);
                         nextScanInfo.textContent = "An unexpected error occurred.";
+                        setTimeout(() => {
+                            nextScanInfo.textContent = "";
+                        }, 5000);
                     });
             });
         });
 
-
-                    // // Handle form submission
-                    // form.addEventListener('submit', event => {
-                    //     event.preventDefault();
-
-                    //     const formData = new FormData(form);
-                    //     formData.set('mode', modeToggle.checked ? 'automatic' : 'manual');
-
-                    //     fetch('/scheduler', {
-                    //         method: 'POST',
-                    //         body: formData
-                    //     })
-                    //         .then(response => response.json())
-                    //         .then(data => {
-                    //             if (data.next_scan) {
-                    //                 const formattedTime = formatTimestamp(data.next_scan);
-                    //                 nextScanInfo.textContent = `Next scan scheduled for: ${formattedTime}`;
-                    //             } else if (data.error) {
-                    //                 nextScanInfo.textContent = `Error: ${data.error}`;
-                    //             } else {
-                    //                 nextScanInfo.textContent = "Settings updated successfully.";
-                    //             }
-                    //         })
-                    //         .catch(err => {
-                    //             nextScanInfo.textContent = `Error: ${err.message}`;
-                    //         });
-                    // });
-
-
-        
-
+        /////////////////////////////////////////////////////////////////////
+        // Save libraries to config file and scan accordingly
+        /////////////////////////////////////////////////////////////////////
         function submitForm(event) {
             event.preventDefault();
 
@@ -482,7 +498,7 @@ function getPeriodKey(timePeriod) {
             }
 
             if (spinnerElement) {
-                spinnerElement.style.display = "block"; // Show the spinner
+                spinnerElement.style.display = "block";
             }
 
             // Gather form data
@@ -496,13 +512,13 @@ function getPeriodKey(timePeriod) {
                 .then(response => response.json())
                 .then(data => {
                     if (spinnerElement) {
-                        spinnerElement.style.display = "none"; // Hide spinner
+                        spinnerElement.style.display = "none";
                     }
 
                     if (data.error && errorMessageElement) {
                         errorMessageElement.textContent = data.error;
                         errorMessageElement.style.display = "block";
-                        return; // Stop further processing
+                        return;
                     }
 
                     if (data.results) {
@@ -554,18 +570,21 @@ function getPeriodKey(timePeriod) {
         };
     </script>
 </head>
+
 <body>
     <header class="header">
-        <div class="wrapper">
-          <div class="logo">
-            <img src="/static/jellyfresh.png" alt="a logo">
-          </div>
-          <div class="header-text">JellyFresh</div>
-        </div>
+            <div class="header-content">
+                <div class="logo">
+                    <img src="/static/jellyfresh.png" alt="Jellyfresh Logo">
+                </div>
+                <div class="header-text">JellyFresh</div>
+            </div>
     </header>
     <div id="settings-section">
         <form>
-            <h3>Scheduler Settings</h3>
+            <div class="library-header">
+                <h3>Scheduler Settings</h3>
+            </div>
             <div class="button-container-toggle">
                 <label class="switch">
                     <input type="checkbox" id="mode-toggle" name="mode">
@@ -582,13 +601,13 @@ function getPeriodKey(timePeriod) {
                     <option value="weekly">Weekly</option>
                     <option value="monthly">Monthly</option>
                 </select>
-    
                 <label for="time">Time of Day:</label>
                 <input type="time" id="time" name="time" value="02:00">
             </div>
-            <p></p>
-            <button type="submit">Save Settings</button>
-            <p id="next-scan-info"></p>
+            <div class="button-container-label">
+                <button type="submit">Save Settings</button>
+                <p id="next-scan-info"></p>
+            </div>
         </form>
     </div>
     <p></p>

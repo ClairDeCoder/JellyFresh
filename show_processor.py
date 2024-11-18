@@ -67,7 +67,7 @@ def process_shows(media_path, new_releases_folder, time_period):
                         linked_shows.add(f"{show_title} - Season {season_title}")
 
     logging.info(f"Total shows/seasons linked: {len(linked_shows)}")
-    return list(linked_shows)  # Return linked shows/seasons for the results
+    return list(linked_shows)  # Return linked shows/seasons for web results
 
 
 

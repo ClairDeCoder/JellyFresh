@@ -8,7 +8,7 @@ def setup_logging(LOG_DIR):
     
     # Ensure log directory exists
     os.makedirs(LOG_DIR, exist_ok=True)
-    os.chmod(LOG_DIR, 0o755)  # Set directory permissions
+    os.chmod(LOG_DIR, 0o755)
 
     # Create a timestamped log file for this scan
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -25,7 +25,7 @@ def setup_logging(LOG_DIR):
     root_logger.setLevel(logging.INFO)
     root_logger.addHandler(handler)
 
-    # Console output for real-time viewing (optional)
+    # Console output for real-time viewing
     console_handler = logging.StreamHandler()
     console_handler.setFormatter(formatter)
     root_logger.addHandler(console_handler)
@@ -38,5 +38,5 @@ def setup_logging(LOG_DIR):
 def cleanup_old_logs(LOG_DIR):
     """Delete older logs, keeping only the most recent 6."""
     log_files = sorted(glob.glob(os.path.join(LOG_DIR, "jellyfin_new_releases_*.log")), reverse=True)
-    for old_log in log_files[6:]:  # Keep the 6 most recent logs
+    for old_log in log_files[6:]:
         os.remove(old_log)
