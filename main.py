@@ -11,6 +11,7 @@ import glob
 import schedule
 import time
 from threading import Thread
+import requests
 
 # Flask app setup
 app = Flask(__name__)
@@ -35,7 +36,6 @@ def trigger_scan():
     """Trigger the /new_releases scan."""
     app.logger.info("Triggering scheduled scan...")
     try:
-        import requests
         response = requests.post("http://127.0.0.1:7007/new_releases")
         if response.status_code == 200:
             app.logger.info("Scheduled scan completed successfully.")
