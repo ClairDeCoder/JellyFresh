@@ -56,19 +56,31 @@ def setup_automation():
         # Clear existing jobs
         schedule.clear()
 
+        # Helper function to calculate weekly or monthly intervals
+        def conditional_trigger(interval_days):
+            last_run_key = "last_run"
+            last_run_date = automation.get(last_run_key)
+            
+            if last_run_date:
+                last_run_date = datetime.fromisoformat(last_run_date)
+                if datetime.now() < last_run_date + timedelta(days=interval_days):
+                    return  # Skip this run
+            
+            # Run the scan and update the last run time
+            trigger_scan()
+            automation[last_run_key] = datetime.now().isoformat()
+            save_config(CONFIG_FILE, config)
+
         # Schedule the job
         if frequency == "daily":
             schedule.every().day.at(time_str).do(trigger_scan)
         elif frequency == "weekly":
-            schedule.every().week.at(time_str).do(trigger_scan)
+            schedule.every().day.at(time_str).do(lambda: conditional_trigger(7))
         elif frequency == "monthly":
-            def monthly_job():
-                trigger_scan()
-                automation["next_scan"] = (datetime.now() + timedelta(weeks=4)).isoformat()
-                save_config(CONFIG_FILE, config)
-            schedule.every().month.at(time_str).do(monthly_job)
+            schedule.every().day.at(time_str).do(lambda: conditional_trigger(30))
 
         app.logger.info(f"Automation set to {frequency} at {time_str}.")
+
 
 def run_scheduler():
     """Run the scheduler loop in a separate thread."""
