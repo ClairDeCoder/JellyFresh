@@ -8,6 +8,7 @@ CONFIG_FILE="/opt/jellyfresh/new_releases_config.json"
 SERVICE_FILE="/etc/systemd/system/jellyfresh.service"
 LOG_DIR="/var/log/jellyfin_new_releases"
 JELLYFRESH_USER="jellyfresh"
+LAN_IP=$(hostname -I | awk '{print $1}')
 
 # Ensure script is run as root
 if [ "$EUID" -ne 0 ]; then
@@ -17,7 +18,8 @@ fi
 
 # Install dependencies
 echo "Installing dependencies..."
-apt update > /dev/null && apt install -y python3 python3-pip > /dev/null
+sudo apt update -y > /dev/null
+sudo apt install -y python3 python3-pip python3-venv > /dev/null
 
 # Create jellyfresh user if not exists
 if ! id -u $JELLYFRESH_USER > /dev/null 2>&1; then
@@ -35,13 +37,27 @@ cp -r . $INSTALL_DIR
 chmod -R 755 $INSTALL_DIR
 chown -R $JELLYFRESH_USER:$JELLYFRESH_USER $INSTALL_DIR
 
-# Create and configure the virtual environment
+# Create a virtual environment
 echo "Setting up virtual environment..."
-python3 -m venv $INSTALL_DIR/venv
-source $INSTALL_DIR/venv/bin/activate
-pip install --upgrade pip > /dev/null
-pip install -r $INSTALL_DIR/requirements.txt > /dev/null
-deactivate
+if [ ! -d "/opt/jellyfresh/venv" ]; then
+    python3 -m venv $INSTALL_DIR/venv
+    echo "Virtual environment created successfully."
+else
+    echo "Virtual environment already exists."
+fi
+
+# Activate the virtual environment
+source /opt/jellyfresh/venv/bin/activate || { echo "Failed to activate virtual environment."; exit 1; }
+
+# Install Python dependencies
+echo "Installing Python dependencies..."
+pip install --upgrade pip setuptools wheel
+pip install -r $INSTALL_DIR/requirements.txt
+
+# Deactivate virtual environment
+if [ -n "$VIRTUAL_ENV" ]; then
+    deactivate
+fi
 
 # Create default configuration file if it doesn't exist
 echo "Creating configuration file..."
@@ -102,4 +118,4 @@ echo "View logs with: journalctl -u jellyfresh -f"
 echo ""
 echo "!!!!!! Don't forget to setup your Jellyfin libraries first !!!!!!"
 echo "!!!!!! Don't forget to create the folders for new releases !!!!!!"
-echo "Setup Jellyfresh here > http://127.0.0.1:7007"
+echo "Setup Jellyfresh here > http://$LAN_IP:7007"
