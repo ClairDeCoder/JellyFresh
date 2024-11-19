@@ -1,6 +1,6 @@
 import os
 import logging
-from datetime import datetime
+import datetime
 from utils import parse_nfo
 
 def process_shows(media_path, new_releases_folder, time_period):

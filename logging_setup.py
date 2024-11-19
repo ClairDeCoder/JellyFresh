@@ -1,6 +1,6 @@
 import logging
 import os
-from datetime import datetime, timedelta
+import datetime
 import glob
 
 def setup_logging(LOG_DIR):

@@ -1,1 +1,10 @@
 __pycache__/
+*.log
+*.pyc
+*.pyo
+*.swp
+env/
+LICENSE
+README.md
+logs/
+config.json
