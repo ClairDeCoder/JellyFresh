@@ -19,9 +19,48 @@
             max-width: 800px;
             margin: 0 auto;
             background: #b99fff;
+            border-radius: 12px;
+        }
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #b99fff;
             padding: 20px;
             border-radius: 12px;
             border: 2px solid #563ead;
+        }
+        .button-container-logs {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+        .logs-section {
+            max-width: 800px;
+            margin-top: 30px;
+            border-radius: 12px;
+        }
+       .collapsible {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, opacity 0.5s ease-out;
+            opacity: 0;
+        }
+        .collapsible.open {
+            max-height: 500px;
+            opacity: 1;
+        }
+        .scrollable {
+            max-height: 300px;
+            overflow-y: auto;
+            overflow-x: auto;
+            background: #f4f4f4;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 12px;
+            margin-top: 10px;
+            box-shadow: 0 4px 8px rgba(54, 3, 134, 0.418);
+            font-family: monospace;
+            word-wrap: break-word;
         }
         .switch {
             position: relative;
@@ -193,7 +232,7 @@
             border: 1px solid #ddd;
             margin-bottom: 15px;
             border-radius: 12px;
-            background-color: #fafafa;
+            background-color: white;
             position: relative;
             box-shadow: 0 4px 8px rgba(54, 3, 134, 0.418);
         }
@@ -257,7 +296,7 @@
             display: none;
             margin-top: 20px;
             padding: 10px;
-            background: #ddd;
+            background: white;
             border-radius: 12px;
             box-shadow: 0 4px 8px rgba(54, 3, 134, 0.418);
         }
@@ -345,7 +384,6 @@
             fetch('/libraries')
                 .then(response => response.json())
                 .then(libraries => {
-                    console.log("Fetched Libraries:", libraries); // Debugging output
 
                     if (libraries && libraries.length > 0) {
                         libraryCount = 0;
@@ -385,6 +423,43 @@
         }
 
         /////////////////////////////////////////////////////////////////////
+        // Show results after scan/Retrieve latest logs
+        ///////////////////////////////////////////////////////////////////// 
+        document.addEventListener("DOMContentLoaded", () => {
+            const logsButton = document.getElementById("toggle-logs-button");
+            const logsSection = document.getElementById("logs");
+            const logContent = document.getElementById("log-content");
+
+            // Toggle visibility of logs and fetch new logs on each click
+            logsButton.addEventListener("click", () => {
+                logsSection.classList.toggle("open");
+
+                if (logsSection.classList.contains("open")) {
+                    logsSection.style.display = "block";
+
+                    // Fetch the latest logs whenever the section is opened
+                    fetch("/logs/recent")
+                        .then((response) => {
+                            if (!response.ok) {
+                                throw new Error("Failed to fetch logs.");
+                            }
+                            return response.text();
+                        })
+                        .then((data) => {
+                            logContent.textContent = data;
+                        })
+                        .catch((error) => {
+                            console.error("Error fetching logs:", error);
+                            logContent.textContent = "Unable to load logs.";
+                        });
+                } else {
+                    logsSection.style.display = "none";
+                }
+            });
+        });
+
+
+        /////////////////////////////////////////////////////////////////////
         // Scheduler setup - get current schedule config && set new config
         /////////////////////////////////////////////////////////////////////            
         document.addEventListener('DOMContentLoaded', () => {
@@ -398,7 +473,6 @@
             fetch('/scheduler')
                 .then(response => response.json())
                 .then(scheduler => {
-                    console.log("Fetched Scheduler Settings:", scheduler); // Debugging output
 
                     // Apply settings from the configuration
                     const mode = scheduler.mode || "manual"; // Default to "manual"
@@ -581,60 +655,73 @@
             </div>
     </header>
     <div id="settings-section">
-        <form>
-            <div class="library-header">
-                <h3>Scheduler Settings</h3>
-            </div>
-            <div class="button-container-toggle">
-                <label class="switch">
-                    <input type="checkbox" id="mode-toggle" name="mode">
-                    <span class="slider"></span>  
-                </label>
-                <toggle-label>
-                    <span id="mode-label" class="toggle-label">Manual</span>
-                </toggle-label>
-            </div>
-            <div id="automatic-options" style="display: none; margin-top: 10px;">
-                <label for="frequency">Frequency:</label>
-                <select id="frequency" name="frequency">
-                    <option value="daily">Daily</option>
-                    <option value="weekly">Weekly</option>
-                    <option value="monthly">Monthly</option>
-                </select>
-                <label for="time">Time of Day:</label>
-                <input type="time" id="time" name="time" value="02:00">
-            </div>
-            <div class="button-container-label">
-                <button type="submit">Save Settings</button>
-                <p id="next-scan-info"></p>
-            </div>
-        </form>
+        <div class="form-container">
+            <form>
+                <div class="library-header">
+                    <h3>Scheduler Settings</h3>
+                </div>
+                <div class="button-container-toggle">
+                    <label class="switch">
+                        <input type="checkbox" id="mode-toggle" name="mode">
+                        <span class="slider"></span>  
+                    </label>
+                    <toggle-label>
+                        <span id="mode-label" class="toggle-label">Manual</span>
+                    </toggle-label>
+                </div>
+                <div id="automatic-options" style="display: none; margin-top: 10px;">
+                    <label for="frequency">Frequency:</label>
+                    <select id="frequency" name="frequency">
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                    </select>
+                    <label for="time">Time of Day:</label>
+                    <input type="time" id="time" name="time" value="02:00">
+                </div>
+                <div class="button-container-label">
+                    <button type="submit">Save Settings</button>
+                    <p id="next-scan-info"></p>
+                </div>
+            </form>
+        </div>
     </div>
     <p></p>
-    <form onsubmit="submitForm(event)">
-        <div id="libraries"></div>
-        <div id="library-form-container"></div>
-        <input type="hidden" id="library_count" name="library_count" value="1">
-            <div class="button-container">
-                <button type="button" onclick="addLibrary()">Add Library</button>
-                <button type="submit">Save and Scan Libraries</button>
+    <div class="form-container">
+        <form onsubmit="submitForm(event)">
+            <div id="libraries"></div>
+            <div id="library-form-container"></div>
+            <input type="hidden" id="library_count" name="library_count" value="1">
+                <div class="button-container">
+                    <button type="button" onclick="addLibrary()">Add Library</button>
+                    <button type="submit">Save and Scan Libraries</button>
+                </div>
+            <div id="spinner" class="spinner">
+                <!-- Spinning Hourglass -->
+                <!-- <img src="https://i.gifer.com/XVo6.gif" alt="Loading..."> -->
+                <!-- Panda Bear Sleeping -->
+                <img src="https://i.gifer.com/5UKD.gif" alt="Loading...">
+                <!-- Duck walking -->
+                <!-- <img src="https://i.gifer.com/XOsX.gif" alt="Loading..."> -->
+                <p>Scanning for new releases... Don't refresh!</p>
             </div>
-        <div id="spinner" class="spinner">
-            <!-- Spinning Hourglass -->
-            <!-- <img src="https://i.gifer.com/XVo6.gif" alt="Loading..."> -->
-             <!-- Panda Bear Sleeping -->
-            <img src="https://i.gifer.com/5UKD.gif" alt="Loading...">
-            <!-- Duck walking -->
-            <!-- <img src="https://i.gifer.com/XOsX.gif" alt="Loading..."> -->
-            <p>Scanning for new releases... Don't refresh!</p>
-        </div>
-        <div id="results" class="results">
-            <h3>Scan Results:</h3>
-            <label>Movies:</label>
-            <ul id="results-movies"></ul>
-            <label>Shows:</label>
-            <ul id="results-shows"></ul>
-        </div>
-    </form>
+            <div id="results" class="results">
+                <h3>Scan Results:</h3>
+                <label>Movies:</label>
+                <ul id="results-movies"></ul>
+                <label>Shows:</label>
+                <ul id="results-shows"></ul>
+            </div>
+        </form>
+        <div class="logs-section">
+            <div class="button-container-logs">
+                <button id="toggle-logs-button">View Latest Logs</button>
+            </div>
+            <div id="logs" class="collapsible scrollable" style="display: none;">
+                <label>Recent Logs:</label>
+                <pre id="log-content"></pre>
+            </div>
+        </div>     
+    </div>
 </body>
 </html>

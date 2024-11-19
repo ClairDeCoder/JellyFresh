@@ -7,6 +7,7 @@ from config_handler import load_config, save_config
 from movie_processor import process_movies
 from show_processor import process_shows
 from utils import clean_new_releases_folder, get_jellyfin_media_paths
+import glob
 
 # Flask app setup
 app = Flask(__name__)
@@ -31,7 +32,6 @@ PERIODS = {
 @app.route('/')
 def home():
     """Render the home page with current config values."""
-    setup_logging(LOG_DIR)
 
     config = load_config(CONFIG_FILE)
     return render_template(
@@ -39,7 +39,6 @@ def home():
         libraries=config.get('libraries', []),
         periods=PERIODS.keys(),
     )
-
 
 
 @app.route('/scheduler', methods=['GET', 'POST'])
@@ -94,6 +93,27 @@ def scheduler():
         })
 
 
+@app.route('/logs/recent', methods=['GET'])
+def get_recent_log():
+    """Serve the most recent log file's content."""
+    try:
+        # Find the most recent log file
+        log_files = sorted(glob.glob(os.path.join(LOG_DIR, "jellyfin_new_releases_*.log")), reverse=True)
+        if not log_files:
+            return jsonify({"error": "No log files found."}), 404
+
+        most_recent_log = log_files[0]
+
+        # Read and return the log content
+        with open(most_recent_log, 'r') as log_file:
+            log_content = log_file.read()
+
+        return log_content, 200
+
+    except Exception as e:
+        app.logger.error(f"Error fetching logs: {e}")
+        return jsonify({"error": "Failed to fetch logs."}), 500
+    
 
 @app.route('/libraries', methods=['GET'])
 def get_libraries():
@@ -102,12 +122,12 @@ def get_libraries():
     return jsonify(config.get('libraries', []))
 
 
-
 @app.route('/new_releases', methods=['POST'])
 def new_releases():
     """Handle the form submission and process the libraries."""
-    config = load_config(CONFIG_FILE)  # Load existing config
+    config = load_config(CONFIG_FILE)
     jellyfin_media_paths = get_jellyfin_media_paths(JELLYFIN_CONFIG_PATH)
+    setup_logging(LOG_DIR)
     new_libraries = []  # Temporarily store the updated library list
     linked_movies = []  # Collect movie titles
     linked_shows = []   # Collect show titles
@@ -176,12 +196,10 @@ def new_releases():
     })
 
 
-
 @app.errorhandler(Exception)
 def handle_exception(e):
     logging.error(f"Unhandled exception: {e}")
     return jsonify({"error": "An unexpected error occurred."}), 500
-
 
 
 if __name__ == '__main__':
