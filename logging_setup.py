@@ -1,6 +1,6 @@
 import logging
 import os
-import datetime
+from datetime import datetime
 import glob
 
 def setup_logging(LOG_DIR):
