@@ -8,12 +8,15 @@ from movie_processor import process_movies
 from show_processor import process_shows
 from utils import clean_new_releases_folder, get_jellyfin_media_paths
 import glob
+import schedule
+import time
+from threading import Thread
 
 # Flask app setup
 app = Flask(__name__)
 
 # Paths
-CONFIG_FILE = '/var/lib/jellyfin/new_releases_config.json'
+CONFIG_FILE = '/opt/jellyfresh/new_releases_config.json'
 JELLYFIN_CONFIG_PATH = '/var/lib/jellyfin/root/default/'
 LOG_DIR = '/var/log/jellyfin_new_releases'
 
@@ -27,12 +30,60 @@ PERIODS = {
     '1_year': timedelta(days=365)
 }
 
+# Scheduler setup
+def trigger_scan():
+    """Trigger the /new_releases scan."""
+    app.logger.info("Triggering scheduled scan...")
+    try:
+        import requests
+        response = requests.post("http://127.0.0.1:7007/new_releases")
+        if response.status_code == 200:
+            app.logger.info("Scheduled scan completed successfully.")
+        else:
+            app.logger.error(f"Scheduled scan failed with status code: {response.status_code}")
+    except Exception as e:
+        app.logger.error(f"Error during scheduled scan: {e}")
+
+def setup_automation():
+    """Set up automated scanning based on the configuration."""
+    config = load_config(CONFIG_FILE)
+    automation = config.get("automation", {})
+    
+    if automation.get("mode") == "automatic":
+        frequency = automation.get("frequency", "daily").lower()
+        time_str = automation.get("time", "02:00")
+
+        # Clear existing jobs
+        schedule.clear()
+
+        # Schedule the job
+        if frequency == "daily":
+            schedule.every().day.at(time_str).do(trigger_scan)
+        elif frequency == "weekly":
+            schedule.every().week.at(time_str).do(trigger_scan)
+        elif frequency == "monthly":
+            def monthly_job():
+                trigger_scan()
+                automation["next_scan"] = (datetime.now() + timedelta(weeks=4)).isoformat()
+                save_config(CONFIG_FILE, config)
+            schedule.every().month.at(time_str).do(monthly_job)
+
+        app.logger.info(f"Automation set to {frequency} at {time_str}.")
+
+def run_scheduler():
+    """Run the scheduler loop in a separate thread."""
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
+
+# Start scheduler thread
+scheduler_thread = Thread(target=run_scheduler, daemon=True)
+scheduler_thread.start()
 
 
 @app.route('/')
 def home():
     """Render the home page with current config values."""
-
     config = load_config(CONFIG_FILE)
     return render_template(
         'index.html',
@@ -87,6 +138,9 @@ def scheduler():
         }
         save_config(CONFIG_FILE, config)
 
+        # Reinitialize automation
+        setup_automation()
+
         return jsonify({
             "message": "Settings saved successfully",
             "next_scan": next_scan.isoformat() if next_scan else None
@@ -113,7 +167,7 @@ def get_recent_log():
     except Exception as e:
         app.logger.error(f"Error fetching logs: {e}")
         return jsonify({"error": "Failed to fetch logs."}), 500
-    
+
 
 @app.route('/libraries', methods=['GET'])
 def get_libraries():
@@ -180,7 +234,6 @@ def new_releases():
             linked = process_shows(media_path, new_releases_folder, time_period)
             linked_shows.extend(linked)
 
-    # Debugging logs for movies and shows
     app.logger.info(f"Linked movies: {linked_movies}")
     app.logger.info(f"Linked shows: {linked_shows}")
 
@@ -203,4 +256,5 @@ def handle_exception(e):
 
 
 if __name__ == '__main__':
+    setup_automation()
     app.run(host='0.0.0.0', port=7007, debug=True)
