@@ -21,10 +21,11 @@ echo "Installing dependencies..."
 sudo apt update -y > /dev/null
 sudo apt install -y python3 python3-pip python3-venv > /dev/null
 
-# Create jellyfresh user if not exists
+# Create jellyfresh user if not exists, add it to adm group
 if ! id -u $JELLYFRESH_USER > /dev/null 2>&1; then
     echo "Creating user $JELLYFRESH_USER..."
     useradd -r -s /usr/sbin/nologin $JELLYFRESH_USER
+    sudo usermod -aG adm jellyfresh
 else
     echo "User $JELLYFRESH_USER already exists."
 fi
@@ -46,8 +47,13 @@ else
     echo "Virtual environment already exists."
 fi
 
-# Activate the virtual environment
-source /opt/jellyfresh/venv/bin/activate || { echo "Failed to activate virtual environment."; exit 1; }
+# Attempt to activate venv
+if source /opt/jellyfresh/venv/bin/activate; then
+    echo "Virtual environment activated."
+else
+    echo "Failed to activate virtual environment."
+    exit 1
+fi
 
 # Install Python dependencies
 echo "Installing Python dependencies..."
