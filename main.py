@@ -19,7 +19,7 @@ app = Flask(__name__)
 # Paths
 CONFIG_FILE = '/opt/jellyfresh/new_releases_config.json'
 JELLYFIN_CONFIG_PATH = '/var/lib/jellyfin/root/default/'
-LOG_DIR = '/var/log/jellyfin_new_releases'
+LOG_DIR = '/var/log/jellyfresh'
 
 # Define time periods
 PERIODS = {
@@ -269,4 +269,4 @@ def handle_exception(e):
 
 if __name__ == '__main__':
     setup_automation()
-    app.run(host='0.0.0.0', port=7007, debug=True) #### REMOVE
+    app.run(host='0.0.0.0', port=7007)
