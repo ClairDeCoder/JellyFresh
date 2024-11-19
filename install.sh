@@ -25,10 +25,12 @@ sudo apt install -y python3 python3-pip python3-venv > /dev/null
 if ! id -u $JELLYFRESH_USER > /dev/null 2>&1; then
     echo "Creating user $JELLYFRESH_USER..."
     useradd -r -s /usr/sbin/nologin $JELLYFRESH_USER
-    sudo usermod -aG adm jellyfresh
 else
     echo "User $JELLYFRESH_USER already exists."
 fi
+
+# Add to adm group for jellyfin config access
+sudo usermod -aG adm jellyfresh
 
 # Set up the installation directory
 echo "Setting up the installation directory..."
