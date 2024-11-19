@@ -6,7 +6,7 @@
 INSTALL_DIR="/opt/jellyfresh"
 CONFIG_FILE="/opt/jellyfresh/new_releases_config.json"
 SERVICE_FILE="/etc/systemd/system/jellyfresh.service"
-LOG_DIR="/var/log/jellyfin_new_releases"
+LOG_DIR="/var/log/jellyfresh"
 JELLYFRESH_USER="jellyfresh"
 LAN_IP=$(hostname -I | awk '{print $1}')
 
