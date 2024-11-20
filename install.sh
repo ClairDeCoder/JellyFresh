@@ -122,7 +122,6 @@ systemctl start jellyfresh.service
 
 # Completion
 echo ""
-echo ""
 echo "
 ////////////////////////////////////////////////////////////////////////////////////
 |                                                                                  |
