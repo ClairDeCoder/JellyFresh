@@ -397,18 +397,21 @@
                             });
                         });
                     } else {
-                        // If no libraries exist, add a single blank form
+                        // If no libraries exist, reset libraryCount and add a single blank form
                         libraryContainer.innerHTML = "";
+                        libraryCount = 0; // Reset library count
                         addLibrary();
                     }
                 })
                 .catch(err => {
                     console.error("Error loading libraries:", err);
-                    // Add a single blank form as a fallback
+                    // Reset libraryCount and add a single blank form as a fallback
                     libraryContainer.innerHTML = "";
+                    libraryCount = 0; // Reset library count
                     addLibrary();
                 });
         });
+
         // Helper function to map time_period to dropdown keys
         function getPeriodKey(timePeriod) {
             const periods = {
