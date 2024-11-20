@@ -39,4 +39,136 @@
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/ClairDeCoder/JellyFresh.git
+    git clone https://github.com/ClairDeCoder/JellyFresh.git
+
+2. Navigate into the JellyFresh directory:
+   ```bash
+    cd JellyFresh
+
+3. Make the installer executable:
+   ```bash
+    sudo chmod +x install.sh
+
+4. Run the installer:
+   ```bash
+    sudo ./install.sh
+
+### This Script Will
+
+- Install necessary dependencies
+- Create a no-login jellyfresh user
+- Set up the jellyfresh service with systemd
+- Start the JellyFresh server on port 7007
+
+---
+
+## Usage
+
+## 🚨 Warnings
+
+1. **Do NOT set JellyFresh spotlight folders to the same location as your Jellyfin media folders.**
+   - Doing so will result in **deletion of your entire media library**.
+   - Always use a separate folder for spotlight output to avoid accidental data loss.
+
+2. **Use JellyFresh at your own risk.**
+   - While this tool is designed to simplify your media management, it performs **deletions** as part of its operations.
+   - Double-check your folder configurations before enabling running scans and enabling automation.
+
+### Access the Dashboard
+
+Once installed, you can access the JellyFresh dashboard at:
+- http://<your-server-ip>:7007
+**Replace <your-server-ip> with the IP address of your JellyFresh server.**
+
+### Configure Spotlight Libraries
+
+- **DO NOT REFRESH THE PAGE WHILE THE SCAN IS BEING RAN**
+- Set an automation schedule if desired, or leave as manual. Manual requires new scans to be conducted within the web interface in order to keep Spotlights updated, else they will remain (e.g. an old movie will stay within your spotlights unless deleted manually)
+- Select what type of library you want to Spotlight, Movies, Shows, or both.
+**Please do not set the Spotlight library for Movies if you are linking shows and vice-versa, this can cause strange behavior and will not work, selecting "Both" works for both**
+- Select the timeframe of your scan. e.g. If you only want to display movies that have been released within the past 6 months, select 6 months.
+**Note that Shows work slightly different. When scanning shows, it will look for any episodes that have aired within the timeframe. If an episode match is found, it will link the ENTIRE season that the episode is contained within, not just the episode itself.**
+- Input the full path to the new Spotlight directory (this is where JellyFresh will create links, and also cleanup **[see: delete]** current links when rescanned!)
+**The Spotlight folders must exist before running the scan!**
+- Add a new library if you are planning to create multiple Spotlight libraries, e.g. 1 for Movies and 1 for Shows
+- Select **Save and Scan Libraries** to save the library configuration and begin a scan. If you remove a library from the web interface because you want 1 less library, you need to again select **Save and Scan Libraries** to remove the extra library from the backend configuration. The removed library will not delete the associated Spotlight folder.
+- Once the scan is completed it will display which media was linked.
+- You can view the most recent logs at anytime by selecting "View Logs", this will always view the most recent logs.
+**Find in webpage works to search the logs displayed. "Linked" will find what's been linked, "Warning" will show missing NFO files or scans on media with no NFO files, "Error" will find .NFO parsing issues.**
+
+## 🚨 Warnings
+
+1. **Do NOT set JellyFresh spotlight folders to the same location as your Jellyfin media folders.**
+   - Doing so will result in **deletion of your entire media library**.
+   - Always use a separate folder for spotlight output to avoid accidental data loss.
+
+2. **Use JellyFresh at your own risk.**
+   - While this tool is designed to simplify your media management, it performs **deletions** as part of its operations.
+   - Double-check your folder configurations before enabling running scans and enabling automation.
+
+### View Logs
+
+- The latest log is present within the web interface by selecting "View Logs"
+- Logs can be view on the server with:
+   ```bash
+    journalctl -u jellyfresh
+- All log files can be viewed within the log folder:
+   ```bash
+    /var/log/jellyfresh
+
+### Uninstall JellyFresh
+
+- JellyFresh comes with a built-in uninstaller:
+   ```bash
+    sudo chmod +x /opt/jellyfresh/uninstall.sh
+    sudo /opt/jellyfresh/uninstall.sh
+
+---
+
+## Troubleshooting
+
+- First check the logs for the service:
+   ```bash
+    journalctl -u jellyfresh
+
+- Verify dependencies are installed on the server:
+   ```bash
+   sudo apt update
+   sudo apt install python3 python3-pip python3-venv
+
+- Verify no port conflicts, JellyFresh uses port 7007.
+- Uninstall and re-install [you never know ;)]
+
+---
+
+## Planned Features
+
+- Docker support; containerization is planned in a future release for easy deployment
+- Improved web UI
+- Additional QOL features
+
+---
+
+## Contributing
+
+Feel free to issue a PR, submit feature requests or issues.
+
+---
+
+## Licensing
+
+This project is licensed under the GNU General Public License V3
+
+---
+
+## Disclaimer
+
+**Use at your own risk!**
+- JellyFresh performs **deletions** as part of its operations. Improper configurations may result in data loss.
+- Ensure all folder paths are configured correctly to avoid unintended consequences.
+
+---
+
+## Author
+
+Developed by ClairDeCoder. For questions or support, please submit here to the repo.
