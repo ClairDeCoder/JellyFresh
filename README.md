@@ -33,10 +33,10 @@
 - Ubuntu or Debian server.
 - JellyFresh needs to be able to see Jellyfin's configuration files; by sitting on the same server (Recommended), OR if you share them over the network [/var/lib/jellyfin/root/default] (Not Recommended).
 - Dependencies are installed using the installer.
-- A Jellyfin server instance configured to your needs.
+- A Jellyfin server instance.
 
 ### Steps to Install
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/JellyFresh.git
+   git clone https://github.com/ClairDeCoder/JellyFresh.git
