@@ -56,28 +56,30 @@ def setup_automation():
         # Clear existing jobs
         schedule.clear()
 
-        # Helper function to calculate weekly or monthly intervals
-        def conditional_trigger(interval_days):
-            last_run_key = "last_run"
-            last_run_date = automation.get(last_run_key)
+        # Helper function to calculate the next scan interval
+        def calculate_next_scan(interval_days):
+            next_scan_key = "next_scan"
+            now = datetime.now()
+            next_scan = automation.get(next_scan_key)
+
+            if next_scan:
+                next_scan = datetime.fromisoformat(next_scan)
+                if now < next_scan:
+                    return  # Skip this run as it's not time yet
             
-            if last_run_date:
-                last_run_date = datetime.fromisoformat(last_run_date)
-                if datetime.now() < last_run_date + timedelta(days=interval_days):
-                    return  # Skip this run
-            
-            # Run the scan and update the last run time
+            # Run the scan and update the next scan time
             trigger_scan()
-            automation[last_run_key] = datetime.now().isoformat()
+            next_scan = now + timedelta(days=interval_days)
+            automation[next_scan_key] = next_scan.isoformat()
             save_config(CONFIG_FILE, config)
 
         # Schedule the job
         if frequency == "daily":
-            schedule.every().day.at(time_str).do(trigger_scan)
+            schedule.every().day.at(time_str).do(lambda: calculate_next_scan(1))
         elif frequency == "weekly":
-            schedule.every().day.at(time_str).do(lambda: conditional_trigger(7))
+            schedule.every().day.at(time_str).do(lambda: calculate_next_scan(7))
         elif frequency == "monthly":
-            schedule.every().day.at(time_str).do(lambda: conditional_trigger(30))
+            schedule.every().day.at(time_str).do(lambda: calculate_next_scan(30))
 
         app.logger.info(f"Automation set to {frequency} at {time_str}.")
 
