@@ -18,8 +18,8 @@ fi
 
 # Install dependencies
 echo "Installing dependencies..."
-sudo apt update -y 2>&1 /dev/null
-sudo apt install -y python3 python3-pip python3-venv 2>&1 /dev/null
+sudo apt update -y > /dev/null
+sudo apt install -y python3 python3-pip python3-venv > /dev/null
 
 # Create jellyfresh user if not exists, add it to adm group
 if ! id -u $JELLYFRESH_USER > /dev/null 2>&1; then
@@ -59,8 +59,8 @@ fi
 
 # Install Python dependencies
 echo "Installing Python dependencies..."
-pip install --upgrade pip setuptools wheel
-pip install -r $INSTALL_DIR/requirements.txt
+pip install --upgrade pip setuptools wheel > /dev/null
+pip install -r $INSTALL_DIR/requirements.txt > /dev/null
 
 # Deactivate virtual environment
 if [ -n "$VIRTUAL_ENV" ]; then
@@ -121,7 +121,9 @@ systemctl enable jellyfresh.service
 systemctl start jellyfresh.service
 
 # Completion
-echo "\n\n
+echo ""
+echo ""
+echo "
 ////////////////////////////////////////////////////////////////////////////////////
 |                                                                                  |
 |       ██╗███████╗██╗     ██╗  ██╗   ██╗███████╗██████╗ ███████╗███████╗██╗  ██╗  |
