@@ -21,7 +21,7 @@ if [[ "$response" =~ ^[Yy]$ ]]; then
     # Stop and disable service
     echo "Disabling & removing JellyFresh service.."
     systemctl stop jellyfresh.service
-    systemctl disable jellyfresh.service > /dev/null
+    systemctl disable jellyfresh.service > /dev/null 2>&1
     systemctl daemon-reload
 
     # Remove files and directories
