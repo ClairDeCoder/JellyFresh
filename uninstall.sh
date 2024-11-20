@@ -12,7 +12,8 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-echo "Sorry to see you go! Are you sure you want to continue uninstalling JellyFresh? [Y/n]"
+echo "Sorry to see you go!"
+echo "Are you sure you want to continue uninstalling JellyFresh? [Y/n]"
 read -r response
 if [[ "$response" =~ ^[Yy]$ ]]; then
     echo "Let's clean this up..."
@@ -20,7 +21,7 @@ if [[ "$response" =~ ^[Yy]$ ]]; then
     # Stop and disable service
     echo "Disabling & removing JellyFresh service.."
     systemctl stop jellyfresh.service
-    systemctl disable jellyfresh.service
+    systemctl disable jellyfresh.service > /dev/null
     systemctl daemon-reload
 
     # Remove files and directories
@@ -35,7 +36,8 @@ if [[ "$response" =~ ^[Yy]$ ]]; then
     # Execute removal of dir after script is done running (preventing conflicts)
     nohup sh -c "sleep 5; rm -rf \"$INSTALL_DIR\"" &> /dev/null &
 
-    echo "Thanks for giving it a go!"
+    echo ""
+    echo "               Thanks for giving it a go!"
     echo ""
     echo "!!!!! Don't forget to clean up your spotlight folders !!!!!"
     echo "Uninstall complete - JellyFresh has been removed from your system."
