@@ -18,8 +18,8 @@ fi
 
 # Install dependencies
 echo "Installing dependencies..."
-sudo apt update -y 2>/dev/null
-sudo apt install -y python3 python3-pip python3-venv 2>/dev/null
+sudo apt update -y > /dev/null 2>&1
+sudo apt install -y python3 python3-pip python3-venv > /dev/null 2>&1
 
 # Create jellyfresh user if not exists, add it to adm group
 if ! id -u $JELLYFRESH_USER > /dev/null 2>&1; then
