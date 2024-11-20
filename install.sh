@@ -136,9 +136,13 @@ echo "
 |                              Installation complete!                              |
 |                   View logs with: journalctl -u jellyfresh -f                    |
 |                                                                                  |
-|        !!!!!! Don't forget to setup your Jellyfin libraries first !!!!!!         |
-|        !!!!!! Don't forget to create the folders for new releases !!!!!!         |
-|                                                                                  |                
+|               Don't forget to setup your Jellyfin libraries first!               |
+|                   Don't forget to create the spotlight folders!                  |
+|                                                                                  |   
+|        !!!!!!  Do NOT! I REPEAT DO NOT set your spotlight folders !!!!!!         |
+|        !!!!!!  to the same as your Jellyfin libraries, your data  !!!!!!         |
+|        !!!!!!              WILL BE DELETED IF YOU DO              !!!!!!         |
+|                                                                                  |   
 |                  Setup Jellyfresh here > http://$LAN_IP:7007                |
 |                                                                                  |
 |                   https://github.com/ClairDeCoder/JellyFresh                     |
