@@ -139,7 +139,7 @@ echo "
 |        !!!!!! Don't forget to setup your Jellyfin libraries first !!!!!!         |
 |        !!!!!! Don't forget to create the folders for new releases !!!!!!         |
 |                                                                                  |                
-|                  Setup Jellyfresh here > http://$LAN_IP:7007                     |
+|                  Setup Jellyfresh here > http://$LAN_IP:7007                |
 |                                                                                  |
 |                   https://github.com/ClairDeCoder/JellyFresh                     |
 ////////////////////////////////////////////////////////////////////////////////////
