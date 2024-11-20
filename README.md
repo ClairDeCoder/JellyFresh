@@ -1,6 +1,6 @@
 # JellyFresh
 
-**JellyFresh** is a companion tool for automating and managing media organization for your Jellyfin server. It's main focus is to find latest the released movies and recently aired show episodes so they can be easily displayed on your Jellyfin homepage, within their own library. JellyFresh uses symbolic links, so no data is duplicated.
+**JellyFresh** is a companion tool for automating and managing media organization for your Jellyfin server. It's main focus is to find the latest released movies and recently aired show episodes so they can be easily displayed on your Jellyfin homepage, within their own library. JellyFresh uses symbolic links, so no data is duplicated.
 
 ---
 
@@ -12,16 +12,16 @@
 
 2. **Use JellyFresh at your own risk.**
    - While this tool is designed to simplify your media management, it performs **deletions** as part of its operations.
-   - Double-check your folder configurations before enabling running scans and enabling automation.
+   - Double-check your folder configurations before running scans and enabling automation.
 
 ---
 
 ## Features
 
 - Scan your media libraries and find newly released media for spotlighting in Jellyfin.
-- Automates media library updates for displaying new releases.
+- Automates spotlight library updates for displaying new releases.
 - Customizable scheduling (daily, weekly, or monthly).
-- Supports multiple media libraries and folders.
+- Supports multiple spotlight libraries and folders.
 - Lightweight and easy to deploy.
 
 ---
@@ -31,7 +31,8 @@
 ### Prerequisites
 
 - Ubuntu or Debian server.
-- JellyFresh needs to be able to see Jellyfin's configuration files; by sitting on the same server (Recommended), OR if you share them over the network [/var/lib/jellyfin/root/default] (Not Recommended).
+- JellyFresh needs to be able to see Jellyfin's configuration files; by sitting on the same server (recommended), OR if you share them over the network [/var/lib/jellyfin/root/default] (Not Recommended).
+**Jellyfresh looks for the full path /var/lib/jellyfin/root/default, if you're going to have it shared over the network, you must mount it to that same path on the server that JellyFresh resides.**
 - Dependencies are installed using the installer.
 - A Jellyfin server instance.
 
@@ -72,7 +73,7 @@
 
 2. **Use JellyFresh at your own risk.**
    - While this tool is designed to simplify your media management, it performs **deletions** as part of its operations.
-   - Double-check your folder configurations before enabling running scans and enabling automation.
+   - Double-check your folder configurations before running scans and enabling automation.
 
 ### Access the Dashboard
 
@@ -94,7 +95,7 @@ Once installed, you can access the JellyFresh dashboard at:
 - Select **Save and Scan Libraries** to save the library configuration and begin a scan. If you remove a library from the web interface because you want 1 less library, you need to again select **Save and Scan Libraries** to remove the extra library from the backend configuration. The removed library will not delete the associated Spotlight folder.
 - Once the scan is completed it will display which media was linked.
 - You can view the most recent logs at anytime by selecting "View Logs", this will always view the most recent logs.
-**Find in webpage works to search the logs displayed. "Linked" will find what's been linked, "Warning" will show missing NFO files or scans on media with no NFO files, "Error" will find .NFO parsing issues.**
+**"Find" in webpage works to search the logs displayed. "Linked" will find what's been linked, "Warning" will show missing NFO files or scans on media with no NFO files, "Error" will find .NFO parsing issues.**
 
 ## 🚨 Warnings
 
@@ -104,12 +105,12 @@ Once installed, you can access the JellyFresh dashboard at:
 
 2. **Use JellyFresh at your own risk.**
    - While this tool is designed to simplify your media management, it performs **deletions** as part of its operations.
-   - Double-check your folder configurations before enabling running scans and enabling automation.
+   - Double-check your folder configurations before running scans and enabling automation.
 
 ### View Logs
 
 - The latest log is present within the web interface by selecting "View Logs"
-- Logs can be view on the server with:
+- Logs can be viewed on the server with:
    ```bash
     journalctl -u jellyfresh
 - All log files can be viewed within the log folder:
@@ -151,7 +152,7 @@ Once installed, you can access the JellyFresh dashboard at:
 
 ## Contributing
 
-Feel free to issue a PR, submit feature requests or issues.
+Feel free to issue a PR, submit feature requests, or submit issues.
 
 ---
 
@@ -166,6 +167,7 @@ This project is licensed under the GNU General Public License V3
 **Use at your own risk!**
 - JellyFresh performs **deletions** as part of its operations. Improper configurations may result in data loss.
 - Ensure all folder paths are configured correctly to avoid unintended consequences.
+- **Again, DO NOT set your Spotlight libraries [see: folders] to the same as your Jellyfin media folders**
 
 ---
 
