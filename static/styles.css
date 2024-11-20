@@ -1,0 +1,312 @@
+body {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-weight: 400;
+    margin: 0;
+    padding: 20px;
+    background-color: #000B25;
+}
+form {
+    max-width: 800px;
+    margin: 0 auto;
+    background: #b99fff;
+    border-radius: 12px;
+}
+.form-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: #b99fff;
+    padding: 20px;
+    border-radius: 12px;
+    border: 2px solid #563ead;
+}
+.button-container-logs {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+.logs-section {
+    max-width: 800px;
+    margin-top: 30px;
+    border-radius: 12px;
+}
+.collapsible {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-out, opacity 0.5s ease-out;
+    opacity: 0;
+}
+.collapsible.open {
+    max-height: 500px;
+    opacity: 1;
+}
+.scrollable {
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: auto;
+    background: #f4f4f4;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 12px;
+    margin-top: 10px;
+    box-shadow: 0 4px 8px rgba(54, 3, 134, 0.418);
+    font-family: monospace;
+    word-wrap: break-word;
+}
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 34px;
+}
+.toggle-label {
+    margin-left: 10px;
+    font-size: 16px;
+    line-height: 1;
+    font-weight: 600;
+    display: block;
+    margin-top: 10px;
+}
+#automatic-options {
+    margin-top: 15px;
+}
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+input:checked + .slider {
+    background-color: #4caf50;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+label {
+    font-weight: 600;
+    display: block;
+    margin-top: 10px;
+}
+input {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-weight: 400;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+}
+/* Arrow for drop-down */
+select {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-weight: 400;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    padding-right: 25px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    background-color: #fff;
+    background-clip: padding-box;
+    appearance: none;
+    background-image: url('/static/arrow.svg');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 14px; /* Adjust arrow size */
+}
+.header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 100%;
+    padding: 10px 20px;
+    margin-bottom: 20px;
+    position: relative;
+    box-sizing: border-box;
+}
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    gap: 20px;
+    width: 100%;
+}
+.logo img {
+    max-width: 80px;
+    height: auto;
+    flex-shrink: 0;
+}
+.header-text {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-weight: 800;
+    font-size: 48px;
+    color: white;
+    text-align: center;
+    flex: 1;
+    min-width: 200px;
+    word-wrap: break-word;
+}
+/* Handle smaller screens */
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+    .logo img {
+        max-width: 60px;
+        margin-bottom: 10px;
+    }
+    .header-text {
+        font-size: 36px;
+        text-align: center;
+        max-width: 100%;
+    }
+}
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+}
+.button-container-toggle {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+.button-container-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+.button-container button {
+    width: auto;
+}
+.logo {
+    display: flex;
+    position: absolute;
+    top: 50%;
+    left: 37.5%;
+    transform: translateY(-50%);
+}
+.library {
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin-bottom: 15px;
+    border-radius: 12px;
+    background-color: white;
+    position: relative;
+    box-shadow: 0 4px 8px rgba(54, 3, 134, 0.418);
+}
+.library-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.library-header h3 {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-weight: 700;
+    margin: 0;
+    font-size: 1.2em;
+}
+.remove-library {
+    background-color: #00A4DC;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1em;
+    font-weight: bold;
+    line-height: 1;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+}
+.remove-library:hover {
+    background-color: #fd2a4d;
+}
+button {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-weight: 600;
+    width: auto;
+    background-color: #00A4DC;
+    color: white;
+    cursor: pointer;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 2px 8px rgba(54, 3, 134, 0.418);
+}
+button:hover {
+    background-color: #563ead;
+}
+.spinner {
+    display: none;
+    text-align: center;
+    margin: 20px 0;
+}
+.spinner img {
+    width: 75px;
+}
+.results {
+    display: none;
+    margin-top: 20px;
+    padding: 10px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(54, 3, 134, 0.418);
+}
+.results ul {
+    list-style: none;
+    padding: 0;
+}
+.results ul li {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-weight: 400;
+    margin: 5px 0;
+}
+.error {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-weight: 600;
+    color: red;
+    text-align: center;
+    margin-top: 10px;
+    display: block;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
