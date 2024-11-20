@@ -135,8 +135,8 @@ echo "
 |                              Installation complete!                              |
 |                   View logs with: journalctl -u jellyfresh -f                    |
 |                                                                                  |
-|       Don't forget to setup the new spotlight libraries in Jellyfin first!       |
-|                   Don't forget to create the spotlight folders!                  |
+|                Don't forget to create the spotlight folders first!               |
+|          Don't forget to setup the new spotlight libraries in Jellyfin!          |
 |                                                                                  |   
 |        !!!!!!  Do NOT! I REPEAT DO NOT set your spotlight folders !!!!!!         |
 |        !!!!!!  to the same as your Jellyfin libraries, your data  !!!!!!         |
