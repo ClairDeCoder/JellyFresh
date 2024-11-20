@@ -77,8 +77,8 @@
 ### Access the Dashboard
 
 Once installed, you can access the JellyFresh dashboard at:
-- http://<your-server-ip>:7007
-**Replace <your-server-ip> with the IP address of your JellyFresh server.**
+- http://your-server-ip:7007
+**Replace your-server-ip with the IP address of your JellyFresh server.**
 
 ### Configure Spotlight Libraries
 
