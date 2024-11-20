@@ -31,7 +31,7 @@ PERIODS = {
     '1_year': timedelta(days=365)
 }
 
-# Scheduler setup
+
 def trigger_scan():
     """Trigger the /new_releases scan."""
     app.logger.info("Triggering scheduled scan...")
@@ -43,6 +43,7 @@ def trigger_scan():
             app.logger.error(f"Scheduled scan failed with status code: {response.status_code}")
     except Exception as e:
         app.logger.error(f"Error during scheduled scan: {e}")
+
 
 def setup_automation():
     """Set up automated scanning based on the configuration."""
@@ -56,8 +57,8 @@ def setup_automation():
         # Clear existing jobs
         schedule.clear()
 
-        # Helper function to calculate the next scan interval
         def calculate_next_scan(interval_days):
+            """Helper function to schedule scans based on next_scan."""
             next_scan_key = "next_scan"
             now = datetime.now()
             next_scan = automation.get(next_scan_key)
@@ -65,7 +66,7 @@ def setup_automation():
             if next_scan:
                 next_scan = datetime.fromisoformat(next_scan)
                 if now < next_scan:
-                    return  # Skip this run as it's not time yet
+                    return  # Skip this run
             
             # Run the scan and update the next scan time
             trigger_scan()
@@ -90,9 +91,24 @@ def run_scheduler():
         schedule.run_pending()
         time.sleep(1)
 
-# Start scheduler thread
-scheduler_thread = Thread(target=run_scheduler, daemon=True)
-scheduler_thread.start()
+
+# Threading for scheduler
+scheduler_thread = None
+
+
+def initialize_app():
+    """Initialize the app and start necessary background threads."""
+    global scheduler_thread
+    setup_automation()  # Setup automation on app initialization
+
+    # Start the scheduler thread if it hasn't been started
+    if scheduler_thread is None or not scheduler_thread.is_alive():
+        scheduler_thread = Thread(target=run_scheduler, daemon=True)
+        scheduler_thread.start()
+
+
+# Initialize app at import
+initialize_app()
 
 
 @app.route('/')
@@ -269,6 +285,6 @@ def handle_exception(e):
     return jsonify({"error": "An unexpected error occurred."}), 500
 
 
+# Only for development
 if __name__ == '__main__':
-    setup_automation()
-    app.run(host='0.0.0.0', port=7007)
+    app.run(host='0.0.0.0', port=7007, debug=True)

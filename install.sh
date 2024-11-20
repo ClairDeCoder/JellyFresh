@@ -18,8 +18,8 @@ fi
 
 # Install dependencies
 echo "Installing dependencies..."
-sudo apt update -y > /dev/null
-sudo apt install -y python3 python3-pip python3-venv > /dev/null
+sudo apt update -y 2>&1 /dev/null
+sudo apt install -y python3 python3-pip python3-venv 2>&1 /dev/null
 
 # Create jellyfresh user if not exists, add it to adm group
 if ! id -u $JELLYFRESH_USER > /dev/null 2>&1; then
@@ -103,7 +103,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=$INSTALL_DIR/venv/bin/python3 $INSTALL_DIR/main.py
+ExecStart=$INSTALL_DIR/venv/bin/gunicorn -w 4 -b 0.0.0.0:7007 main:app
 WorkingDirectory=$INSTALL_DIR
 Environment="CONFIG_FILE=$CONFIG_FILE"
 Environment="LOG_DIR=$LOG_DIR"
@@ -121,9 +121,24 @@ systemctl enable jellyfresh.service
 systemctl start jellyfresh.service
 
 # Completion
-echo "Installation complete!"
-echo "View logs with: journalctl -u jellyfresh -f"
-echo ""
-echo "!!!!!! Don't forget to setup your Jellyfin libraries first !!!!!!"
-echo "!!!!!! Don't forget to create the folders for new releases !!!!!!"
-echo "Setup Jellyfresh here > http://$LAN_IP:7007"
+echo "\n\n
+////////////////////////////////////////////////////////////////////////////////////
+|                                                                                  |
+|       ██╗███████╗██╗     ██╗  ██╗   ██╗███████╗██████╗ ███████╗███████╗██╗  ██╗  |
+|       ██║██╔════╝██║     ██║  ╚██╗ ██╔╝██╔════╝██╔══██╗██╔════╝██╔════╝██║  ██║  |
+|       ██║█████╗  ██║     ██║   ╚████╔╝ █████╗  ██████╔╝█████╗  ███████╗███████║  |
+|  ██   ██║██╔══╝  ██║     ██║    ╚██╔╝  ██╔══╝  ██╔══██╗██╔══╝  ╚════██║██╔══██║  |
+|  ╚█████╔╝███████╗███████╗███████╗██║   ██║     ██║  ██║███████╗███████║██║  ██║  |
+|   ╚════╝ ╚══════╝╚══════╝╚══════╝╚═╝   ╚═╝     ╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═╝  |
+|                                                                                  |
+|                              Installation complete!                              |
+|                   View logs with: journalctl -u jellyfresh -f                    |
+|                                                                                  |
+|        !!!!!! Don't forget to setup your Jellyfin libraries first !!!!!!         |
+|        !!!!!! Don't forget to create the folders for new releases !!!!!!         |
+|                                                                                  |                
+|                  Setup Jellyfresh here > http://$LAN_IP:7007                     |
+|                                                                                  |
+|                   https://github.com/ClairDeCoder/JellyFresh                     |
+////////////////////////////////////////////////////////////////////////////////////
+"
