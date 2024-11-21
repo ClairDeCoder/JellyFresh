@@ -31,12 +31,12 @@
 ### Prerequisites
 
 - Ubuntu or Debian server.
-- JellyFresh needs to be able to see Jellyfin's configuration files; by sitting on the same server (recommended), OR if you share them over the network [/var/lib/jellyfin/root/default] (Not Recommended).
+- JellyFresh needs to be able to see Jellyfin's configuration files; by sitting on the same server (recommended), OR if you share them over the network [/var/lib/jellyfin/root/default] (Not Recommended).  
 **Jellyfresh looks for the full path /var/lib/jellyfin/root/default, if you're going to have it shared over the network, you must mount it to that same path on the server that JellyFresh resides.**
 - Dependencies are installed using the installer.
 - A Jellyfin server instance.
-- If the Spotlight folders you are creating are located on a CIFS drive (Windows network share), you must add mfsymlinks to the Linux server entry to allow symbolic link creation.
-An example fstab entry:
+- If the Spotlight folders you are creating are located on a CIFS drive (Windows network share), you must add mfsymlinks to the Linux server entry to allow symbolic link creation.  
+An example fstab entry:  
 //my-windows-IP/share-name /local/path cifs username={username},password={password},**mfsymlinks**
 
 ### Steps to Install
@@ -88,25 +88,25 @@ Once installed, you can access the JellyFresh dashboard at:
 
 - **DO NOT REFRESH THE PAGE WHILE THE SCAN IS BEING RAN**
 - Set an automation schedule if desired, or leave as manual. Manual requires new scans to be conducted within the web interface in order to keep Spotlights updated, else they will remain (e.g. an old movie will stay within your spotlights unless deleted manually)
-- Select what type of library you want to Spotlight, Movies, Shows, or both.
+- Select what type of library you want to Spotlight, Movies, Shows, or both.  
 **Please do not set the Spotlight library for Movies if you are linking shows and vice-versa, this can cause strange behavior and will not work, selecting "Both" works for both**
-- Select the timeframe of your scan. e.g. If you only want to display movies that have been released within the past 6 months, select 6 months.
+- Select the timeframe of your scan. e.g. If you only want to display movies that have been released within the past 6 months, select 6 months.  
 **Note that Shows work slightly different. When scanning shows, it will look for any episodes that have aired within the timeframe. If an episode match is found, it will link the ENTIRE season that the episode is contained within, not just the episode itself.**
-- Input the full path to the new Spotlight directory (this is where JellyFresh will create links, and also cleanup **[see: delete]** current links when rescanned!)
+- Input the full path to the new Spotlight directory (this is where JellyFresh will create links, and also cleanup **[see: delete]** current links when rescanned!)  
 **The Spotlight folders must exist before running the scan!**
 - Add a new library if you are planning to create multiple Spotlight libraries, e.g. 1 for Movies and 1 for Shows
 - Select **Save and Scan Libraries** to save the library configuration and begin a scan. If you remove a library from the web interface because you want 1 less library, you need to again select **Save and Scan Libraries** to remove the extra library from the backend configuration. The removed library will not delete the associated Spotlight folder.
 - Once the scan is completed it will display which media was linked.
-- You can view the most recent logs at anytime by selecting "View Logs", this will always view the most recent logs.
+- You can view the most recent logs at anytime by selecting "View Logs", this will always view the most recent logs.  
 **"Find" in webpage works to search the logs displayed. "Linked" will find what's been linked, "Warning" will show missing NFO files or scans on media with no NFO files, "Error" will find .NFO parsing issues.**
 
 ## 🚨 Warnings
 
-1. **Do NOT set JellyFresh spotlight folders to the same location as your Jellyfin media folders.**
+1. **Do NOT set JellyFresh spotlight folders to the same location as your Jellyfin media folders.**  
    - Doing so will result in **deletion of your entire media library**.
    - Always use a separate folder for spotlight output to avoid accidental data loss.
 
-2. **Use JellyFresh at your own risk.**
+2. **Use JellyFresh at your own risk.**  
    - While this tool is designed to simplify your media management, it performs **deletions** as part of its operations.
    - Double-check your folder configurations before running scans and enabling automation.
 
