@@ -36,11 +36,31 @@ def trigger_scan():
     """Trigger the /new_releases scan."""
     app.logger.info("Triggering scheduled scan...")
     try:
-        response = requests.post("http://127.0.0.1:7007/new_releases")
+        config = load_config(CONFIG_FILE)
+        libraries = config.get('libraries', [])
+        if not libraries:
+            app.logger.warning("No libraries defined in the configuration. Skipping scan.")
+            return
+        
+        library_count = len(libraries)
+        form_data = {
+            'library_count': str(library_count)
+        }
+        
+        for i, library in enumerate(libraries, start=1):
+            form_data[f'media_type-{i}'] = library.get('media_type', 'movies')
+            time_period_seconds = library.get('time_period', PERIODS['1_week'].total_seconds())
+            for period_key, delta in PERIODS.items():
+                if delta.total_seconds() == time_period_seconds:
+                    form_data[f'period-{i}'] = period_key
+                    break
+            form_data[f'new_releases_folder-{i}'] = library.get('new_releases_folder', '')
+
+        response = requests.post("http://127.0.0.1:7007/new_releases", data=form_data)
         if response.status_code == 200:
             app.logger.info("Scheduled scan completed successfully.")
         else:
-            app.logger.error(f"Scheduled scan failed with status code: {response.status_code}")
+            app.logger.error(f"Scheduled scan failed with status code: {response.status_code}. Response: {response.text}")
     except Exception as e:
         app.logger.error(f"Error during scheduled scan: {e}")
 
