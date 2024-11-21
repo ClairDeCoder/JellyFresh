@@ -35,6 +35,9 @@
 **Jellyfresh looks for the full path /var/lib/jellyfin/root/default, if you're going to have it shared over the network, you must mount it to that same path on the server that JellyFresh resides.**
 - Dependencies are installed using the installer.
 - A Jellyfin server instance.
+- If the Spotlight folders you are creating are located on a CIFS drive (Windows network share), you must add mfsymlinks to the Linux server entry to allow symbolic link creation.
+An example fstab entry:
+//my-windows-IP/share-name /local/path cifs username={username},password={password},**mfsymlinks**
 
 ### Steps to Install
 
