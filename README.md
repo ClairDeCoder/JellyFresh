@@ -39,6 +39,16 @@
 An example fstab entry:  
 //my-windows-IP/share-name /local/path cifs username={username},password={password},**mfsymlinks**
 
+### High Level Steps
+
+1. Install JellyFresh (see **Steps to Install** below), do not configure yet.
+2. Create your new JellyFresh (spotlight) folder(s) **These must not be your Jellyfin media folders!**
+3. Create your new library within Jellyfin: Menu > Dashboard > Libraries > "Add Media Library"
+4. Select whether the library is Movies, Shows, or both.
+5. Input the path to the Spotlight folder you created.
+6. Repeat from steps 2-5 if you want Movies and Shows separated into their own Spotlight folders
+7. Configure JellyFresh! (see **Access the Dashboard** and **Configure Spotlight Libraries** below)
+
 ### Steps to Install
 
 1. Clone the repository:
