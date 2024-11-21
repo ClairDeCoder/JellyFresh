@@ -15,17 +15,25 @@ function addLibrary(libraryData = null) {
 
     libraryDiv.innerHTML = `
         <div class="library-header">
-            <h3>Library ${libraryCount + 1}</h3>
+            <h3>Spotlight Library ${libraryCount + 1}</h3>
             <button type="button" class="remove-library" onclick="removeLibrary(${libraryCount + 1})">X</button>
         </div>
-        <label for="media_type-${libraryCount + 1}">Select Media Type:</label>
+        <span class="info-container">
+        <label for="media_type-${libraryCount + 1}">Select Media Type</label>
+            <span class="info-icon">i</span>
+            <span class="tooltip">•Select movies to scan only movies<br>•Select shows to scan only shows<br>•Select both to scan both<br>•Movies will not work for shows and<br>shows will not work for movies</span>
+        </span>
         <select id="media_type-${libraryCount + 1}" name="media_type-${libraryCount + 1}" required>
             <option value="movies" ${mediaType === "movies" ? "selected" : ""}>Movies</option>
             <option value="shows" ${mediaType === "shows" ? "selected" : ""}>TV Shows</option>
             <option value="both" ${mediaType === "both" ? "selected" : ""}>Both</option>
         </select>
         
-        <label for="period-${libraryCount + 1}">Select Time Period:</label>
+        <span class="info-container">
+            <label for="period-${libraryCount + 1}">Select Time Period</label>
+            <span class="info-icon">i</span>
+            <span class="tooltip">The recent timeframe in which media will be added<br>Example:<br>Selecting 6 months will add media released<br>within the last 6 months</span>
+        </span>
         <select id="period-${libraryCount + 1}" name="period-${libraryCount + 1}" required>
             <option value="1_week" ${timePeriod === "1_week" ? "selected" : ""}>Last Week</option>
             <option value="2_weeks" ${timePeriod === "2_weeks" ? "selected" : ""}>Last 2 Weeks</option>
@@ -35,7 +43,11 @@ function addLibrary(libraryData = null) {
             <option value="1_year" ${timePeriod === "1_year" ? "selected" : ""}>Last Year</option>
         </select>
 
-        <label for="new_releases_folder-${libraryCount + 1}">New Releases Folder:</label>
+        <span class="info-container">
+            <label for="new_releases_folder-${libraryCount + 1}">New Releases Folder</label>
+            <span class="info-icon">i</span>
+            <span class="tooltip">Folders must exist first<br>Do NOT add your Jellyfin media folders here!</span>
+        </span>
         <input type="text" id="new_releases_folder-${libraryCount + 1}" name="new_releases_folder-${libraryCount + 1}" placeholder="/path/to/new/releases" value="${newReleasesFolder}" required>
     `;
 
