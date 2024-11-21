@@ -1,6 +1,7 @@
 # JellyFresh
 
 **JellyFresh** is a companion tool for automating and managing media organization for your Jellyfin server. It's main focus is to find the latest released movies and recently aired show episodes so they can be easily displayed on your Jellyfin homepage, within their own library. JellyFresh uses symbolic links, so no data is duplicated.
+![Screenshot from 2024-11-20 00-37-43](https://github.com/user-attachments/assets/0e7224db-7358-4cce-b530-4b497d192003)
 
 ---
 
