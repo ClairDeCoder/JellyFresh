@@ -15,6 +15,8 @@
    - While this tool is designed to simplify your media management, it performs **deletions** as part of its operations.
    - Double-check your folder configurations before running scans and enabling automation.
 
+3. The scans performed by JellyFresh currently change the "data modified" on the file itself. If you plan to remove and replace the metadata for your entire library, this could change the "Date Added" within your media folder, causing the library to not display latest added Media in the order it was actually added. This has **NOT** caused an issue with a simple missing metadata scan, or for finding new media metadata (it is rare for you to need to replace metadata for your entire library).
+
 ---
 
 ## Features
@@ -36,6 +38,8 @@
 **Jellyfresh looks for the full path /var/lib/jellyfin/root/default, if you're going to have it shared over the network, you must mount it to that same path on the server that JellyFresh resides.**
 - Dependencies are installed using the installer.
 - A Jellyfin server instance.
+- JellyFresh currently only supports metadata searching through NFO files, the NFO files must be saved in the same directory as your media file.
+  **Within the management of your library in Jellyfin, select "NFO" under metadata savers**
 - The paths for your media in your Jellyfin Server configuration must be the same paths seen by JellyFresh, this is because JellyFresh reads the folder paths from Jellyfin's configuration files.  
 **For Example: If Jellyfin has a Movies library at /my/media/Movies, then the viewable path by JellyFresh must also be located at /my/media/Movies. This will only be truly applicable if you're running JellyFresh on a different server, or in a different container.**  
 - If the Spotlight folders you are creating are located on a CIFS drive (Windows network share), you must add mfsymlinks to the Linux server entry to allow symbolic link creation.  
