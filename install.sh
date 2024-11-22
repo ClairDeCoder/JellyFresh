@@ -103,7 +103,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=$INSTALL_DIR/venv/bin/gunicorn -w 4 -b 0.0.0.0:7007 main:app
+ExecStart=$INSTALL_DIR/venv/bin/gunicorn -w 4 -b 0.0.0.0:7007 --timeout 0 main:app
 WorkingDirectory=$INSTALL_DIR
 Environment="CONFIG_FILE=$CONFIG_FILE"
 Environment="LOG_DIR=$LOG_DIR"
