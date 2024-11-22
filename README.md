@@ -36,13 +36,15 @@
 **Jellyfresh looks for the full path /var/lib/jellyfin/root/default, if you're going to have it shared over the network, you must mount it to that same path on the server that JellyFresh resides.**
 - Dependencies are installed using the installer.
 - A Jellyfin server instance.
+- The paths for your media in your Jellyfin Server configuration must be the same paths seen by JellyFresh, this is because JellyFresh reads the folder paths from Jellyfin's configuration files.  
+**For Example: If Jellyfin has a Movies library at /my/media/Movies, then the viewable path by JellyFresh must also be located at /my/media/Movies. This will only be truly applicable if you're running JellyFresh on a different server, or in a different container.**  
 - If the Spotlight folders you are creating are located on a CIFS drive (Windows network share), you must add mfsymlinks to the Linux server entry to allow symbolic link creation.  
 An example fstab entry:  
 //my-windows-IP/share-name /local/path cifs username={username},password={password},**mfsymlinks**
 
 ### High Level Steps
 
-1. Install JellyFresh (see **Steps to Install** below), do not configure yet.
+1. Install JellyFresh (see **Installation Methods** below), do not configure yet.
 2. Create your new JellyFresh (spotlight) folder(s) **These must not be your Jellyfin media folders!**
 3. Create your new library within Jellyfin: Menu > Dashboard > Libraries > "Add Media Library"
 4. Select whether the library is Movies, Shows, or both.
@@ -50,7 +52,52 @@ An example fstab entry:
 6. Repeat from steps 2-5 if you want Movies and Shows separated into their own Spotlight folders
 7. Configure JellyFresh! (see **Access the Dashboard** and **Configure Spotlight Libraries** below)
 
-### Steps to Install
+### Installation Methods
+
+#### Docker Run
+
+**Note: The Docker set up may be more complicated to get running if you're not familiar with Docker, this is due to the nature of the application.**
+**Again: If Jellyfin has a Movies library at /my/media/Movies, then the viewable path by JellyFresh must also be located at /my/media/Movies. This will only be truly applicable if you're running JellyFresh on a different server, or in a container.** 
+
+1. Docker run command. **NOTE** For Docker, it may be best to place your spotlight folders in the same parent folder as your Jellyfin Media folders **NOT THE SAME FOLDER AS YOUR MEDIA**. This is because of volume mounting, this way it is easy for JellyFresh to see all folders with 1 volume mount. Take the example tree below:
+   ```bash
+   /some/folders/JellyfinMedia/
+                  ├── Movies/
+                  ├── Shows/
+                  ├── Music/
+                  ├── SpotlightMovies/
+                  └── SpotlightShows/
+
+2. This Docker run command uses the example path provided above for the spotlight libraries. Change your folder paths accordingly. **Do not** change the /var/lib folder for Jellyfin, this is used to read Jellyfin's configuration file.
+   ```bash
+   docker run -d \
+      --name jellyfresh \
+      -p 7007:7007 \
+      -v /var/lib/jellyfin/root/default:/var/lib/jellyfin/root/default:ro \
+      -v /some/folders/JellyfinMedia:/some/folders/JellyfinMedia \
+      clairdecoder/jellyfresh:latest
+
+3. If you do not wish to place your spotlight folders in the same parent folder as your Jellyfin Media, then you will need an extra volume mount. 1 will be for JellyFresh to read your Jellyfin Media, and the other will be used to create the links for your Spotlight media.
+   ```bash
+   docker run -d \
+      --name jellyfresh \
+      -p 7007:7007 \
+      -v /var/lib/jellyfin/root/default:/var/lib/jellyfin/root/default:ro \
+      -v /some/folders/JellyfinMedia:/some/folders/JellyfinMedia \
+      -v /another/folder/spotlights:/another/folder/spotlights \
+      clairdecoder/jellyfresh:latest
+
+#### Docker Compose
+
+**Please read through the instruction for Docker Run to edit the compose file as needed. Folder paths are important and depending on your setup you may need an extra volume mount!**
+
+1. Copy the docker-compose.yml file to your server. Edit the file to suit your needs (based on the extra info provided in the Docker Run section, specifically for folder paths and/or an extra volume mount).
+
+2. When done configuring the Volumes within the compose file, issue the compose command:
+   ```bash
+   docker compose up -d
+
+#### Ubuntu/Debian Install
 
 1. Clone the repository:
    ```bash
@@ -158,7 +205,6 @@ Once installed, you can access the JellyFresh dashboard at:
 
 ## Planned Features
 
-- Docker support; containerization is planned in a future release for easy deployment
 - Improved web UI
 - Additional QOL features
 

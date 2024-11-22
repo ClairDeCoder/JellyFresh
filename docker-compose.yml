@@ -1,0 +1,22 @@
+
+services:
+
+  jellyfresh:
+
+    image: clairdecoder/jellyfresh:latest
+
+    container_name: jellyfresh
+
+    ports:
+      - "7007:7007"
+
+    volumes:
+      # Path to Jellyfin Library configurations, do not change
+      - /var/lib/jellyfin/root/default:/var/lib/jellyfin/root/default:ro
+
+      # Read the instructions @ https://github.com/ClairDeCoder/JellyFresh under the Docker section first!!
+      # This section needs some explaining!
+      # DO NOT USE YOUR JELLYFIN MEDIA FOLDERS!!
+      - /path/to/spotlight/folders:/path/to/spotlight/folders
+
+    restart: unless-stopped

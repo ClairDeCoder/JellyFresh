@@ -2,3 +2,4 @@ Flask
 schedule
 requests
 gunicorn
+setuptools # Docker CVE
