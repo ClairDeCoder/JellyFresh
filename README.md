@@ -31,7 +31,7 @@
 
 ### Prerequisites
 
-- Ubuntu or Debian server.
+- Ubuntu or Debian server **OR** Docker capable computer.
 - JellyFresh needs to be able to see Jellyfin's configuration files; by sitting on the same server (recommended), OR if you share them over the network [/var/lib/jellyfin/root/default] (Not Recommended).  
 **Jellyfresh looks for the full path /var/lib/jellyfin/root/default, if you're going to have it shared over the network, you must mount it to that same path on the server that JellyFresh resides.**
 - Dependencies are installed using the installer.
